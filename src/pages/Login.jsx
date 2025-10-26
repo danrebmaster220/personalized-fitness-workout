@@ -1,50 +1,108 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebaseConfig";
-import { useNavigate, Link } from "react-router-dom";
-import "../styles/LoginRegister.css"
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/LoginRegister.css";
+
+const API_BASE = "http://localhost/personalized-fitness-workout/backend/public";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!email || !password) {
+      setError("Please fill out both email and password.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); // Redirect to Home after login
+      const response = await axios.post(
+        `${API_BASE}?route=user&action=login`,
+        { email, password }
+      );
+
+      const data = response.data;
+
+      if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setSuccess("Login successful! Redirecting...");
+        setTimeout(() => navigate("/"), 1000);
+      } else {
+        setError(data.message || "Invalid email or password.");
+      }
     } catch (err) {
-      setError("Invalid email or password");
+      console.error("Login error:", err);
+      setError(
+        err.response?.data?.message || "Server error. Please try again later."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <p>
-        Don’t have an account?{" "}
-        <Link to="/register" className="register-link">Register here</Link>
-      </p>
+    <div className="split-container">
+      <div className="left-panel">
+        <div className="overlay">
+          <h2>
+            Welcome to <span>FitSync</span>
+          </h2>
+          <p>Stay fit. Stay focused. Stay strong.</p>
+        </div>
+      </div>
+
+      <div className="right-panel">
+        <div className="auth-card">
+          <header>
+            <h1>
+              Welcome Back<span className="dot">.</span>
+            </h1>
+            <p>
+              Don’t have an account? <Link to="/register">Register</Link>
+            </p>
+          </header>
+
+          <form className="auth-form" onSubmit={handleLogin}>
+            <div className="input-group">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+              <label>Email</label>
+            </div>
+
+            <div className="input-group">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+              <label>Password</label>
+            </div>
+
+            <button type="submit" disabled={loading}>
+              {loading ? "Signing in…" : "Login"}
+            </button>
+
+            {error && <p className="auth-error">{error}</p>}
+            {success && <p className="auth-success">{success}</p>}
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

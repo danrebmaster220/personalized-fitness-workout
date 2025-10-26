@@ -1,50 +1,114 @@
 import React, { useState } from "react";
-import { auth } from "../firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useNavigate, Link } from "react-router-dom";
-import "../styles/LoginRegister.css"
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/LoginRegister.css";
+
+const API_BASE = "http://localhost/personalized-fitness-workout/backend/public";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!email || !password) {
+      setError("Please fill out both email and password.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/login"); // Redirect to login page
+      const response = await axios.post(
+        `${API_BASE}?route=user&action=register`,
+        { email, password }
+      );
+
+      const data = response.data;
+
+      if (data.success) {
+        setSuccess("Account created successfully! Redirecting to login...");
+        setEmail("");
+        setPassword("");
+        setTimeout(() => navigate("/login"), 1000);
+      } else {
+        setError(data.message || "Registration failed. Please try again.");
+      }
     } catch (err) {
-      setError(err.message);
+      console.error("Register error:", err);
+      setError(
+        err.response?.data?.message || "Server error. Please try again later."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>Create an Account</h2>
-      <form onSubmit={handleRegister}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password (6+ characters)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Register</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <p>
-        Already have an account?{" "}
-        <Link to="/login" className="login-link">Login here</Link>
-      </p>
+    <div className="split-container">
+      <div className="left-panel">
+        <div className="overlay">
+          <h2>
+            Welcome to <span>FitSync</span>
+          </h2>
+          <p>Customize your fitness journey today.</p>
+        </div>
+      </div>
+
+      <div className="right-panel">
+        <div className="auth-card">
+          <header>
+            <h1>
+              Create Account<span className="dot">.</span>
+            </h1>
+            <p>
+              Already have an account? <Link to="/login">Login</Link>
+            </p>
+          </header>
+
+          <form className="auth-form" onSubmit={handleRegister}>
+            <div className="input-group">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+              <label>Email</label>
+            </div>
+
+            <div className="input-group">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+              />
+              <label>Password</label>
+            </div>
+
+            <button type="submit" disabled={loading}>
+              {loading ? "Creating account…" : "Register"}
+            </button>
+
+            {error && <p className="auth-error">{error}</p>}
+            {success && <p className="auth-success">{success}</p>}
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
