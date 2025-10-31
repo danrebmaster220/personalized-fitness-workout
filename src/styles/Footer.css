@@ -18,7 +18,7 @@
 .footer-logo {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #f7b731;
+  color: white;
 }
 
 .footer-logo-accent {
@@ -38,7 +38,7 @@
 }
 
 .footer-links a:hover {
-  color: #f7b731;
+  color: #0066ff;
 }
 
 
@@ -54,7 +54,7 @@
 }
 
 .footer-socials a:hover {
-  color: #f7b731;
+  color: #0066ff;
 }
 
 .footer-bottom {

@@ -8,16 +8,20 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check login state whenever localStorage changes or the page reloads
+  // Lock body scroll when menu is open
   useEffect(() => {
-    const checkLogin = () => {
-      setIsLoggedIn(!!localStorage.getItem("userToken"));
-    };
+    if (menuOpen) {
+      document.body.style.overflow = "hidden"; // prevent scroll
+    } else {
+      document.body.style.overflow = "auto";   // restore scroll
+    }
+  }, [menuOpen]);
 
-    // initial load
+  // Check login status
+  useEffect(() => {
+    const checkLogin = () => setIsLoggedIn(!!localStorage.getItem("userToken"));
     checkLogin();
     window.addEventListener("storage", checkLogin);
-
     return () => window.removeEventListener("storage", checkLogin);
   }, []);
 
@@ -27,22 +31,17 @@ const Header = () => {
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
       }, 300);
     } else {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     }
     setMenuOpen(false);
   };
 
   const handleGenerateWorkout = () => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    } else {
-      navigate("/generate"); // Open the modal
-    }
+    if (!isLoggedIn) navigate("/login");
+    else navigate("/generate");
     setMenuOpen(false);
   };
 
@@ -50,56 +49,74 @@ const Header = () => {
     localStorage.removeItem("userToken");
     setIsLoggedIn(false);
     navigate("/login");
+    setMenuOpen(false); // also close menu on logout
   };
 
   return (
     <header className="header">
       <div className="header-container">
-        {/* Logo */}
         <div className="logo" onClick={() => navigate("/")}>
           FitSync
         </div>
 
-        {/* Hamburger icon for mobile */}
-        <div className="menu-icon" onClick={toggleMenu}>
-          ☰
-        </div>
-
-        {/* Navigation Links */}
-        <nav className={`nav ${menuOpen ? "active" : ""}`}>
+        <nav className="nav-center">
           <span onClick={() => scrollToSection("hero")}>Home</span>
           <span onClick={() => scrollToSection("features")}>Features</span>
           <span onClick={() => scrollToSection("about")}>About</span>
           <span onClick={() => scrollToSection("contact")}>Contact</span>
           <span onClick={handleGenerateWorkout}>Generate Workout</span>
-
-          <div className="auth-links">
-            {!isLoggedIn ? (
-              <>
-                <Link to="/login" onClick={toggleMenu}>
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="register-btn"
-                  onClick={toggleMenu}
-                >
-                  Register
-                </Link>
-              </>
-            ) : (
-              <div className="profile-dropdown">
-                <span className="profile-link" onClick={() => navigate("/profile")}>
-                  Profile
-                </span>
-                <button className="logout-btn" onClick={handleLogout}>
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
         </nav>
+
+        <div className="auth-right">
+          {!isLoggedIn ? (
+            <>
+              <Link to="/login" className="login-btn">Login</Link>
+              <Link to="/register" className="register-btn">Register</Link>
+            </>
+          ) : (
+            <div className="profile-dropdown">
+              <span onClick={() => navigate("/profile")}>Profile</span>
+              <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </div>
+          )}
+        </div>
+
+        {/* Hamburger menu icon */}
+        <div className={`menu-icon ${menuOpen ? "open" : ""}`} onClick={toggleMenu}>
+          ☰
+        </div>
       </div>
+
+      {/* Sliding mobile menu */}
+      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+        <span onClick={() => scrollToSection("hero")}>Home</span>
+        <span onClick={() => scrollToSection("features")}>Features</span>
+        <span onClick={() => scrollToSection("about")}>About</span>
+        <span onClick={() => scrollToSection("contact")}>Contact</span>
+        <span onClick={() => scrollToSection("CTA")}>Generate Workout</span>
+
+        <div className="mobile-auth">
+          {!isLoggedIn ? (
+            <>
+              <Link to="/login" className="login-btn" onClick={toggleMenu}>Login</Link>
+              <Link to="/register" className="register-btn" onClick={toggleMenu}>
+                Register
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/profile" onClick={toggleMenu}>Profile</Link>
+              <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Overlay */}
+      <div
+        className={`mobile-overlay ${menuOpen ? "open" : ""}`}
+        onClick={toggleMenu}
+      />
     </header>
   );
 };

@@ -11,7 +11,7 @@ const MainLayout = () => {
       <main className="content">
         <Outlet /> {/* Home/Login/Register will appear */}
       </main>
-      <Footer />
+      
     </div>
   );
 };

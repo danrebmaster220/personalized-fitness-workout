@@ -43,7 +43,7 @@ const PrimarySection = () => {
         setError(data.message || "Failed to generate workout. Try again later.");
       }
     } catch (err) {
-      setError("Server error. Please try again later.");
+      setError(err, "Server error. Please try again later.");
     } finally {
       setLoading(false);
     }
