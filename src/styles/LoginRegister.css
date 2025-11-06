@@ -12,7 +12,7 @@ body {
 
 .left-panel {
   flex: 1;
-  background: url('LoginRegisterPic.jpg') center/cover no-repeat;
+  background: url('../assets/images/LoginRegisterPic.jpg') center/cover no-repeat;
   position: relative;
 }
 
