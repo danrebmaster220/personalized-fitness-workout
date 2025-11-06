@@ -26,7 +26,7 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${API_BASE}?route=user&action=login`,
+        `${API_BASE}/?route=user&action=login`,
         { email, password }
       );
 

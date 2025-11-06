@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config/Database.php';
-require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Users.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -14,6 +14,62 @@ class UserController {
         $database = new Database();
         $this->db = $database->connect();
         $this->user = new User($this->db);
+    }
+
+    public function login($email, $password) {
+        $user = $this->user->findByEmail($email);
+
+        // Check if user exists
+        if (!$user) {
+            return ["success" => false, "message" => "User not found."];
+        }
+
+        // // Check if user verified
+        // if (isset($user['Is_Verified']) && !$user['Is_Verified']) {
+        //     return ["success" => false, "message" => "Please verify your email first."];
+        // }
+        if (isset($user['Is_Verified']) && !$user['Is_Verified']) {
+            $warning = "Your account isn’t verified yet. You can verify it later in your profile settings.";
+            return [
+                "success" => true,
+                "message" => $warning ?? "Login successful.",
+                "user" => $user
+            ];
+        }
+
+        // Verify password
+        if (!password_verify($password, $user['Password'])) {
+            return ["success" => false, "message" => "Incorrect password."];
+        }
+
+        // Optional: remove sensitive info before returning
+        unset($user['Password'], $user['Verification_Token'], $user['Reset_Token'], $user['Reset_Expires']);
+
+        return [
+            "success" => true,
+            "message" => "Login successful.",
+            "user" => $user
+        ];
+    }
+
+    public function register($email, $password) {
+        if ($this->user->findByEmail($email)) {
+            return ["success" => false, "message" => "Email already registered."];
+        }
+
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $token = bin2hex(random_bytes(16));
+
+        if ($this->user->create($email, $hashedPassword, $token)) {
+            $verifyLink = "http://localhost/personalized-fitness-workout/backend/public/verify.php?token=$token";
+            $this->sendEmail($email, "Verify Your FitSync Account", "
+                <p>Welcome! Please click the link below to verify your account:</p>
+                <a href='$verifyLink'>$verifyLink</a>
+            ");
+            return ["success" => true, "message" => "Registration successful! Please verify your email."];
+        }
+
+        return ["success" => false, "message" => "Registration failed."];
     }
 
     private function sendEmail($to, $subject, $body) {
@@ -41,26 +97,6 @@ class UserController {
         }
     }
 
-    public function register($email, $password) {
-        if ($this->user->findByEmail($email)) {
-            return ["success" => false, "message" => "Email already registered."];
-        }
-
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $token = bin2hex(random_bytes(16));
-
-        if ($this->user->create($email, $hashedPassword, $token)) {
-            $verifyLink = "http://localhost/personalized-fitness-workout/verify?token=$token";
-            $this->sendEmail($email, "Verify Your FitSync Account", "
-                <p>Welcome! Please click the link below to verify your account:</p>
-                <a href='$verifyLink'>$verifyLink</a>
-            ");
-            return ["success" => true, "message" => "Registration successful! Please verify your email."];
-        }
-
-        return ["success" => false, "message" => "Registration failed."];
-    }
-
     public function verify($token) {
         if ($this->user->verifyUser($token)) {
             return ["success" => true, "message" => "Account verified successfully!"];
@@ -76,7 +112,7 @@ class UserController {
         $expires = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
         if ($this->user->setResetToken($email, $token, $expires)) {
-            $resetLink = "http://localhost/personalized-fitness-workout/reset?token=$token";
+            $resetLink = "http://localhost/personalized-fitness-workout/backend/public/reset.php?token=$token";
             $this->sendEmail($email, "Password Reset Request", "
                 <p>Click the link below to reset your password:</p>
                 <a href='$resetLink'>$resetLink</a>

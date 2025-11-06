@@ -31,7 +31,7 @@ const Register = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${API_BASE}?route=user&action=register`,
+        `${API_BASE}/?route=user&action=register`,
         { email, password }
       );
 
