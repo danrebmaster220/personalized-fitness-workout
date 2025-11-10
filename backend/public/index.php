@@ -1,13 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:5173");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Handle preflight request
+// Handle preflight request (optional, but safe to keep)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -38,7 +35,7 @@ switch ($route) {
                     echo json_encode(["success" => false, "message" => "Email and password are required."]);
                     exit();
                 }
-                echo json_encode($controller->register($data['email'], $data['password']));
+                echo json_encode($controller->register($data)); // ✅ Send full array instead
                 break;
 
             case 'login':
@@ -75,6 +72,31 @@ switch ($route) {
                     exit();
                 }
                 echo json_encode($controller->verify($token));
+                break;
+
+            case 'getProfile':
+                $userId = $_GET['userId'] ?? null;
+                if (!$userId) {
+                    echo json_encode(["success" => false, "message" => "User ID required."]);
+                    exit();
+                }
+                echo json_encode($controller->getUserProfile($userId));
+                break;
+            case 'updateProfile':
+                $data = json_decode(file_get_contents("php://input"), true);
+                echo json_encode($controller->updateProfile($data['userId'], $data));
+                break;
+            case 'changePassword':
+                $data = json_decode(file_get_contents("php://input"), true);
+                echo json_encode($controller->changePassword($data['userId'], $data['oldPassword'], $data['newPassword']));
+                break;
+            case 'resendVerification':
+                $userId = $_GET['userId'] ?? null;
+                echo json_encode($controller->resendVerification($userId));
+                break;
+            case 'generateWorkout':
+                $data = json_decode(file_get_contents("php://input"), true);
+                echo json_encode($controller->generateWorkout($data['userId'], $data));
                 break;
 
             default:

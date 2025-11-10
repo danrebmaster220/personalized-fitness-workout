@@ -19,30 +19,23 @@ class UserController {
     public function login($email, $password) {
         $user = $this->user->findByEmail($email);
 
-        // Check if user exists
         if (!$user) {
             return ["success" => false, "message" => "User not found."];
         }
 
-        // // Check if user verified
-        // if (isset($user['Is_Verified']) && !$user['Is_Verified']) {
-        //     return ["success" => false, "message" => "Please verify your email first."];
-        // }
         if (isset($user['Is_Verified']) && !$user['Is_Verified']) {
             $warning = "Your account isn’t verified yet. You can verify it later in your profile settings.";
             return [
                 "success" => true,
-                "message" => $warning ?? "Login successful.",
+                "message" => $warning,
                 "user" => $user
             ];
         }
 
-        // Verify password
         if (!password_verify($password, $user['Password'])) {
             return ["success" => false, "message" => "Incorrect password."];
         }
 
-        // Optional: remove sensitive info before returning
         unset($user['Password'], $user['Verification_Token'], $user['Reset_Token'], $user['Reset_Expires']);
 
         return [
@@ -52,17 +45,18 @@ class UserController {
         ];
     }
 
-    public function register($email, $password) {
-        if ($this->user->findByEmail($email)) {
+    // Updated for two-step: Accepts full data (personal + email/pass)
+    public function register($data) {
+        if ($this->user->findByEmail($data['email'])) {
             return ["success" => false, "message" => "Email already registered."];
         }
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
         $token = bin2hex(random_bytes(16));
 
-        if ($this->user->create($email, $hashedPassword, $token)) {
+        if ($this->user->create($data['firstName'], $data['lastName'], $data['email'], $hashedPassword, $data['age'], $data['height'], $data['weight'], $data['gender'], $data['fitnessLevel'], $token)) {
             $verifyLink = "http://localhost/personalized-fitness-workout/backend/public/verify.php?token=$token";
-            $this->sendEmail($email, "Verify Your FitSync Account", "
+            $this->sendEmail($data['email'], "Verify Your FitSync Account", "
                 <p>Welcome! Please click the link below to verify your account:</p>
                 <a href='$verifyLink'>$verifyLink</a>
             ");
@@ -78,8 +72,8 @@ class UserController {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'your_email@gmail.com';
-            $mail->Password   = 'your_app_password';
+            $mail->Username   = 'your_email@gmail.com'; // Replace with your email
+            $mail->Password   = 'your_app_password';     // Replace with app password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
@@ -112,7 +106,7 @@ class UserController {
         $expires = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
         if ($this->user->setResetToken($email, $token, $expires)) {
-            $resetLink = "http://localhost/personalized-fitness-workout/backend/public/reset.php?token=$token";
+            $resetLink = "http://localhost:5173/reset-password?token=$token";
             $this->sendEmail($email, "Password Reset Request", "
                 <p>Click the link below to reset your password:</p>
                 <a href='$resetLink'>$resetLink</a>
@@ -132,6 +126,101 @@ class UserController {
             return ["success" => true, "message" => "Password reset successful."];
         }
         return ["success" => false, "message" => "Failed to reset password."];
+    }
+
+    // New: Get user profile
+    public function getUserProfile($userId) {
+        $user = $this->user->findById($userId);
+        if ($user) {
+            unset($user['Password'], $user['Verification_Token'], $user['Reset_Token'], $user['Reset_Expires']);
+            return ["success" => true, "profile" => $user];
+        }
+        return ["success" => false, "message" => "User not found."];
+    }
+
+    // New: Update profile
+    public function updateProfile($userId, $data) {
+        if ($this->user->updateProfile($userId, $data)) {
+            return ["success" => true, "message" => "Profile updated successfully."];
+        }
+        return ["success" => false, "message" => "Failed to update profile."];
+    }
+
+    // New: Change password
+    public function changePassword($userId, $oldPassword, $newPassword) {
+        $user = $this->user->findById($userId);
+        if (!$user || !password_verify($oldPassword, $user['Password'])) {
+            return ["success" => false, "message" => "Incorrect old password."];
+        }
+
+        $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        if ($this->user->updatePasswordById($userId, $hashedNewPassword)) {
+            return ["success" => true, "message" => "Password changed successfully."];
+        }
+        return ["success" => false, "message" => "Failed to change password."];
+    }
+
+    // New: Resend verification
+    public function resendVerification($userId) {
+        $user = $this->user->findById($userId);
+        if (!$user) return ["success" => false, "message" => "User not found."];
+
+        $token = bin2hex(random_bytes(16));
+        if ($this->user->updateVerificationToken($userId, $token)) {
+            $verifyLink = "http://localhost/personalized-fitness-workout/backend/public/verify.php?token=$token";
+            $this->sendEmail($user['Email'], "Verify Your FitSync Account", "
+                <p>Please click the link below to verify your account:</p>
+                <a href='$verifyLink'>$verifyLink</a>
+            ");
+            return ["success" => true, "message" => "Verification email resent."];
+        }
+        return ["success" => false, "message" => "Failed to resend verification."];
+    }
+
+    // New: Generate workout
+    public function generateWorkout($userId, $data) {
+        $user = $this->user->findById($userId);
+        if (!$user || !$user['Is_Verified']) {
+            return ["success" => false, "message" => "Please verify your email first."];
+        }
+
+        // Placeholder API calls (replace with real cURL to external APIs)
+        $foodRec = $this->callAPI('food-recommendation', $data);
+        $bodyCondition = $this->callAPI('body-condition', $data);
+        $workout = $this->callAPI('workout', $data);
+
+        // Insert into workout_plan
+        $query = "INSERT INTO workout_plan (User_ID, Plan_Name, Description, Age, Gender, Weight, Height, Fitness_Level, Fitness_Goal, Equipment, Body_Condition, Dietary_Preference) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$userId, $data['planName'], $workout['description'], $data['age'], $data['gender'], $data['weight'], $data['height'], $data['fitnessLevel'], $data['goal'], $data['equipment'], $bodyCondition, $data['dietary']]);
+        $workoutId = $this->db->lastInsertId();
+
+        // Insert exercises
+        foreach ($workout['exercises'] as $ex) {
+            $query = "INSERT INTO exercise (Workout_ID, Exercise_Name, Target_Muscle, Equipment, Repetitions, Sets) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$workoutId, $ex['name'], $ex['muscle'], $ex['equipment'], $ex['reps'], $ex['sets']]);
+        }
+
+        // Log API usage
+        $this->logAPI('workout', $userId);
+
+        // Generate PDF (placeholder - use TCPDF)
+        $pdfContent = "Workout Plan: " . $workout['description']; // Build full content
+        // Implement PDF generation here (e.g., require TCPDF and create file)
+
+        return ["success" => true, "message" => "Workout generated.", "pdf" => $pdfContent];
+    }
+
+    private function callAPI($type, $data) {
+        // Placeholder: Return mock data
+        return ['description' => 'Sample workout', 'exercises' => [['name' => 'Push-up', 'muscle' => 'Chest', 'equipment' => 'None', 'reps' => 10, 'sets' => 3]]];
+    }
+
+    private function logAPI($apiName, $userId) {
+        $query = "INSERT INTO api_logs (API_Name, User_ID) VALUES (?, ?)";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$apiName, $userId]);
     }
 }
 ?>

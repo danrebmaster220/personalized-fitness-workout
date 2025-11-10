@@ -10,12 +10,12 @@ const Home = () => {
     const token = localStorage.getItem("userToken");
 
     if (token) {
-      // User logged in → scroll to CTA section
+      // User logged in scroll to CTA section
       document
         .getElementById("generate-workout")
         ?.scrollIntoView({ behavior: "smooth" });
     } else {
-      // Guest → redirect to login
+      // Guest  redirect to login
       window.location.href = "/login";
     }
   };

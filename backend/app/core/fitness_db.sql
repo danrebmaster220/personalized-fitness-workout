@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2025 at 12:22 PM
+-- Generation Time: Nov 10, 2025 at 10:58 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,10 +29,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `user` (
   `User_ID` int(11) NOT NULL,
-  `Email` varchar(100) NOT NULL,
-  `Full_Name` varchar(100) DEFAULT NULL,
-  `Password` varchar(255) DEFAULT NULL,
+  `FirstName` varchar(50) NOT NULL,
+  `LastName` varchar(50) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `Password` varchar(255) NOT NULL,
   `Role` enum('user','admin') DEFAULT 'user',
+  `Age` int(11) DEFAULT NULL,
+  `Height` decimal(5,2) DEFAULT NULL,
+  `Weight` decimal(5,2) DEFAULT NULL,
+  `Gender` enum('male','female','other') DEFAULT NULL,
+  `Fitness_Level` enum('beginner','intermediate','advanced') DEFAULT NULL,
+  `Profile_Image` varchar(255) DEFAULT NULL,
   `Is_Verified` tinyint(1) DEFAULT 0,
   `Verification_Token` varchar(255) DEFAULT NULL,
   `Reset_Token` varchar(255) DEFAULT NULL,
@@ -45,11 +52,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`User_ID`, `Email`, `Full_Name`, `Password`, `Role`, `Is_Verified`, `Verification_Token`, `Reset_Token`, `Reset_Expires`, `Created_At`, `Updated_At`) VALUES
-(1, 'dian@gmail.com', NULL, '$2y$10$2dWKp4Nuz/ezZqIWvlt8muvUQ5PoNkPrdIB.cKnvffHc8k0l73/KS', 'user', 0, '1a1caf27b9e7da7e124d6deb88bada32', NULL, NULL, '2025-11-06 09:38:43', '2025-11-06 09:38:43'),
-(2, 'spam120500@gmail.com', NULL, '$2y$10$8zXKdhEqoZ.kIs6Q1H0Vye1/3sF7m6tQ80EwjdBnuCyeI6PkAif1m', 'user', 0, '09665f579a05ff3d98bd70656aa2833e', NULL, NULL, '2025-11-06 09:39:56', '2025-11-06 09:39:56'),
-(3, 'ericc@gmail.com', NULL, '$2y$10$4dC.W9kItScIfTxkhdSWzusqVaP4p0pWgihiv7gVbM6Xo01BV0.Q6', 'user', 0, '8367955345f5688470917a864a4c00be', NULL, NULL, '2025-11-06 18:50:55', '2025-11-06 18:50:55'),
-(4, 'abdu@gmail.com', NULL, '$2y$10$1/bLVi/mbmGIkaGNi5IT5.9QjwBM2bFqM0x48eP1QhDke8AGyPirW', 'user', 0, '2c68a3cfa71e7121cc942be925b60de3', NULL, NULL, '2025-11-06 18:51:38', '2025-11-06 18:51:38');
+INSERT INTO `user` (`User_ID`, `FirstName`, `LastName`, `Email`, `Password`, `Role`, `Age`, `Height`, `Weight`, `Gender`, `Fitness_Level`, `Profile_Image`, `Is_Verified`, `Verification_Token`, `Reset_Token`, `Reset_Expires`, `Created_At`, `Updated_At`) VALUES
+(1, 'alshaik', 'hassan', 'alshaik7813@gmail.com', '$2y$10$3o5lSZO59xtyhWiH3Kfj.uNQOMgpHmhuahFj1Xif/0WcNzWkXIbVK', 'user', 22, 168.00, 58.00, 'male', 'beginner', NULL, 0, '62d26d566c4db6bb24d4d3c45c701800', NULL, NULL, '2025-11-10 16:22:04', '2025-11-10 16:22:04');
 
 --
 -- Indexes for dumped tables
@@ -70,7 +74,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
