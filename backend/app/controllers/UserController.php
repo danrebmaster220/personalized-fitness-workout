@@ -54,7 +54,7 @@ class UserController {
         $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
         $token = bin2hex(random_bytes(16));
 
-        if ($this->user->create($data['firstName'], $data['lastName'], $data['email'], $hashedPassword, $data['age'], $data['height'], $data['weight'], $data['gender'], $data['fitnessLevel'], $token)) {
+        if ($this->user->create($data['firstName'], $data['lastName'], $data['email'], $hashedPassword, $data['age'], $data['height'], $data['weight'], $data['gender'], $data['fitnessLevel'], $data['activityLevel'], $token)) {
             $verifyLink = "http://localhost/personalized-fitness-workout/backend/public/verify.php?token=$token";
             $this->sendEmail($data['email'], "Verify Your FitSync Account", "
                 <p>Welcome! Please click the link below to verify your account:</p>
@@ -177,41 +177,7 @@ class UserController {
         return ["success" => false, "message" => "Failed to resend verification."];
     }
 
-    // New: Generate workout
-    public function generateWorkout($userId, $data) {
-        $user = $this->user->findById($userId);
-        if (!$user || !$user['Is_Verified']) {
-            return ["success" => false, "message" => "Please verify your email first."];
-        }
-
-        // Placeholder API calls (replace with real cURL to external APIs)
-        $foodRec = $this->callAPI('food-recommendation', $data);
-        $bodyCondition = $this->callAPI('body-condition', $data);
-        $workout = $this->callAPI('workout', $data);
-
-        // Insert into workout_plan
-        $query = "INSERT INTO workout_plan (User_ID, Plan_Name, Description, Age, Gender, Weight, Height, Fitness_Level, Fitness_Goal, Equipment, Body_Condition, Dietary_Preference) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([$userId, $data['planName'], $workout['description'], $data['age'], $data['gender'], $data['weight'], $data['height'], $data['fitnessLevel'], $data['goal'], $data['equipment'], $bodyCondition, $data['dietary']]);
-        $workoutId = $this->db->lastInsertId();
-
-        // Insert exercises
-        foreach ($workout['exercises'] as $ex) {
-            $query = "INSERT INTO exercise (Workout_ID, Exercise_Name, Target_Muscle, Equipment, Repetitions, Sets) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$workoutId, $ex['name'], $ex['muscle'], $ex['equipment'], $ex['reps'], $ex['sets']]);
-        }
-
-        // Log API usage
-        $this->logAPI('workout', $userId);
-
-        // Generate PDF (placeholder - use TCPDF)
-        $pdfContent = "Workout Plan: " . $workout['description']; // Build full content
-        // Implement PDF generation here (e.g., require TCPDF and create file)
-
-        return ["success" => true, "message" => "Workout generated.", "pdf" => $pdfContent];
-    }
-
+    
     private function callAPI($type, $data) {
         // Placeholder: Return mock data
         return ['description' => 'Sample workout', 'exercises' => [['name' => 'Push-up', 'muscle' => 'Chest', 'equipment' => 'None', 'reps' => 10, 'sets' => 3]]];
