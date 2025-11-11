@@ -1,0 +1,45 @@
+/* inside src/styles/ */
+.generate-container { padding: 20px; color: #fff; background: transparent; }
+.generate-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+h1 { margin:0; font-size:22px; }
+.btn-primary { background:#0066ff; color:#fff; padding:8px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+.btn-secondary { background:transparent; color:#fff; padding:8px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); cursor:pointer; }
+
+.result-fullback {
+  position: fixed; inset: 0; display:flex; align-items:center; justify-content:center;
+  background: rgba(0,0,0,0.7); z-index:1300;
+}
+.result-fullcard {
+  width: min(1100px, 96%); max-height: 90vh; overflow: hidden;
+  background:#071024; color:#fff; border-radius:12px; display:flex; flex-direction:column;
+  box-shadow: 0 20px 50px rgba(2,6,23,0.7);
+}
+.result-fullhead {
+  display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.result-logo { width:48px; height:48px; border-radius:8px; object-fit:cover; margin-right:12px; }
+.result-title { font-size:20px; font-weight:700; }
+.result-sub { color:#9ca3af; font-size:13px; margin-top:4px; }
+.result-close { background:transparent; border:none; color:#fff; font-size:20px; cursor:pointer; }
+
+/* Body */
+.result-body { padding: 18px 22px; overflow-y:auto; flex:1; }
+.result-cards { display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; margin-bottom: 16px; }
+.card { background: rgba(255,255,255,0.02); padding:12px; border-radius:10px; min-height:120px; }
+.card-title { font-weight:700; margin-bottom:8px; }
+.card-content { font-size:14px; color:#e6eefc; }
+.exercise-block { margin-bottom:10px; }
+.exercise-name { font-weight:600; }
+.exercise-line { display:flex; justify-content:space-between; gap:8px; margin-top:6px; }
+.muted { color:#9ca3af; margin-top:6px; }
+.small { font-size:13px; }
+
+/* Notes */
+.notes { padding:10px 0; }
+
+/* Actions footer */
+.result-actions {
+  display:flex; justify-content:space-between; align-items:center; padding:14px 22px; border-top:1px solid rgba(255,255,255,0.03);
+}
+.result-userinfo { font-size:14px; }
+.result-buttons { display:flex; gap:8px; align-items:center; }

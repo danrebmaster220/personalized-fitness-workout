@@ -1,0 +1,9 @@
+/* inside src/styles/ */
+.history-container { padding:20px; color:#fff; }
+.history-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px; margin-top:12px; }
+.history-card { background: rgba(255,255,255,0.02); padding:14px; border-radius:10px; }
+.hc-top { display:flex; justify-content:space-between; align-items:center; }
+.hc-title { font-weight:700; }
+.hc-sub { color:#9ca3af; font-size:13px; }
+.hc-pre { background:#041021; padding:10px; border-radius:8px; font-size:12px; color:#e6eefc; }
+.muted { color:#9ca3af; }

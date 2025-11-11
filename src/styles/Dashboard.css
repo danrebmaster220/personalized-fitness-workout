@@ -1,0 +1,38 @@
+@import "./Sidebar.css";
+
+.hero-header {
+  background:linear-gradient(135deg, var(--navy) 0%, #003d7a 100%);
+  padding:3rem 2rem;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+.hero-header::before {
+  content:'';
+  position:absolute;
+  top:-50%;
+  right:-10%;
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle, rgba(0,119,255,0.15) 0%, transparent 70%);
+  border-radius:50%;
+  animation:pulse 8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform:scale(1); opacity:0.5; }
+  50% { transform:scale(1.1); opacity:0.8; }
+}
+
+.hero-content {position:relative;z-index:1;}
+.hero-title {color:var(--text-light);font-size:2.8rem;font-weight:800;margin-bottom:.5rem;}
+.hero-subtitle {color:rgba(255,255,255,0.85);font-size:1.15rem;}
+
+.content-area {padding:2rem;}
+
+.empty-state {
+  text-align:center;
+  padding:3rem 2rem;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}

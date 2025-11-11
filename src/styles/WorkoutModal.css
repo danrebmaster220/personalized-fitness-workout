@@ -1,0 +1,51 @@
+/* inside src/styles/ */
+.wm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index: 1200;
+}
+.wm-card {
+  width: min(980px, 96%);
+  max-height: 90vh;
+  overflow-y:auto;
+  background: #071024;
+  color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+}
+.wm-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom: 10px;
+}
+.wm-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+.wm-form { margin-top: 6px; }
+.wm-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+.wm-field { display:flex; flex-direction:column; font-size:14px; }
+.wm-field input, .wm-field select {
+  margin-top:6px;
+  padding:8px 10px;
+  border-radius:8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color:#fff;
+}
+.wm-field-full { grid-column: 1 / -1; }
+.wm-equip { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+.wm-eq-item { background: rgba(255,255,255,0.02); padding:6px 8px; border-radius:8px; font-size:13px; }
+.wm-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+.wm-error { color:#ff7b7b; margin-top:8px; font-size:13px; }
+.btn-primary { background:#0066ff; color:#fff; padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+.btn-secondary { background:transparent; color:#fff; padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); cursor:pointer; }

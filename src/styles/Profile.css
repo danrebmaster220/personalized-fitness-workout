@@ -1,0 +1,12 @@
+/* inside src/styles/ */
+@import "./Sidebar.css";
+
+.profile-card {
+  background:#fff;
+  padding:2rem;
+  border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+  font-size:1rem;
+  line-height:2;
+  color:#222;
+}
