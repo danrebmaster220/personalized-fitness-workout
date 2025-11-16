@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import "../../styles/LoginRegister.css";
+import "../styles/LoginRegister.css";
 
 const API_BASE = "/api";
 
@@ -35,7 +35,11 @@ const Login = () => {
       if (data.success) {
         localStorage.setItem("user", JSON.stringify(data.user));
         setSuccess(data.message);
-        setTimeout(() => navigate("/dashboard"), 1000);
+        if (data.user.Role === "admin") {
+          setTimeout(() => navigate("/admin/dashboard"), 1000);
+        } else {
+          setTimeout(() => navigate("/dashboard"), 1000);
+        }
       } else {
         setError(data.message || "Invalid email or password.");
       }

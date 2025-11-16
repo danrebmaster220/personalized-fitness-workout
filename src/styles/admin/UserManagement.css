@@ -1,0 +1,265 @@
+.admin-page {
+  padding: 20px;
+}
+
+.admin-page h2 {
+  margin-bottom: 18px;
+  font-size: 24px;
+  font-weight: 700;
+}
+.user-management-container {
+  padding: 20px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.user-management-container h2 {
+  margin-bottom: 20px;
+  text-align: left;
+  font-size: 24px;
+  font-weight: bold;
+  color: #222;
+}
+
+/* Table */
+.user-table-wrapper {
+  width: 100%;
+  overflow-x: auto; 
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.user-table thead {
+  background: #f8f9fa;
+}
+
+.user-table th {
+  text-align: left;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 15px;
+  color: #333;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.user-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #444;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.user-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Delete Button */
+.delete-btn {
+  padding: 6px 12px;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+  margin: 15px 0;
+  margin-right: 10px;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+}
+
+.no-action {
+  display: flex;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+/* Search & Filters */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.filters input[type="text"] {
+  flex: 1 1 250px;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.filters select {
+  flex: 1 1 180px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: white;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filters input[type="text"]:focus,
+.filters select:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+  outline: none;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background: white;
+  padding: 25px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-box h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.modal-box p {
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-btn {
+  padding: 8px 16px;
+  background: #d1d5db;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cancel-btn:hover {
+  background: #b8bcc2;
+}
+
+.confirm-btn {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.confirm-btn:hover {
+  background: #dc2626;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-table, 
+  .user-table thead, 
+  .user-table tbody, 
+  .user-table th, 
+  .user-table td, 
+  .user-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .user-table thead {
+    display: none;
+  }
+
+  .user-table tr {
+    background: #ffffff;
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .user-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    padding: 10px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .user-table td:last-child {
+    border-bottom: none;
+  }
+
+  .user-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #333;
+  }
+  .delete-btn {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  .search-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-btn,
+  .reset-btn,
+  .filter-select {
+    width: 100%;
+  }
+}
+
+body {
+  overflow-x: hidden;
+}

@@ -28,3 +28,5 @@ dist-ssr
 
 # ignore environment secrets
 backend/config/.env
+backend/config/env.php
+/backend/public/pdfs/

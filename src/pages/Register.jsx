@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import "../../styles/LoginRegister.css";
+import "../styles/LoginRegister.css";
 
 const API_BASE = "/api";
 
@@ -16,6 +16,7 @@ const Register = () => {
     weight: "",
     gender: "",
     fitnessLevel: "",
+    activityLevel: "", 
     email: "",
     password: "",
     confirmPassword: "",
@@ -59,6 +60,7 @@ const Register = () => {
           weight: formData.weight,
           gender: formData.gender,
           fitnessLevel: formData.fitnessLevel,
+          activityLevel: formData.activityLevel,
           email: formData.email,
           password: formData.password
         }
@@ -187,6 +189,22 @@ const Register = () => {
                     <option value="advanced">Advanced</option>
                   </select>
                   <label>Fitness Level</label>
+                </div>
+                <div className="input-group">
+                  <select
+                    name="activityLevel"
+                    value={formData.activityLevel}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled hidden></option>
+                    <option value="sedentary">Sedentary (No exercise)</option>
+                    <option value="light">Light (1–3 days/week)</option>
+                    <option value="moderate">Moderate (3–5 days/week)</option>
+                    <option value="active">Active (6–7 days/week)</option>
+                    <option value="very-active">Very Active/Athlete</option>
+                  </select>
+                  <label>Activity Level</label>
                 </div>
                 <button type="button" onClick={handleNext}>Next</button>
               </>

@@ -1,0 +1,37 @@
+.admin-sidebar {
+  width: 240px;
+  background: #001f3f;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar nav {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar nav a {
+  color: #cfd8dc;
+  padding: 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin: 5px 0;
+}
+
+.admin-sidebar nav a.active {
+  background: #003566;
+  color: white;
+}
+
+.admin-logout {
+  margin-top: auto;
+  padding: 10px;
+  border: none;
+  background: #d00000;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}

@@ -26,7 +26,7 @@
   color:var(--text-light);
   text-decoration:none;
   text-align:center;
-  display:block;
+  display: block;
 }
 .logo span{ color:var(--primary-blue); font-weight:400; }
 

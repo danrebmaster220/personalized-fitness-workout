@@ -1,51 +1,140 @@
 <?php
-require_once '../core/Database.php';
+require_once __DIR__ . '/../core/Database.php';
+require_once __DIR__ . '/../models/Users.php';
 
 class AdminController {
     private $db;
+    private $user;
 
     public function __construct() {
-        $this->db = new Database();
+        $database = new Database();
+        $this->db = $database->connect();
+        $this->user = new User($this->db);
     }
 
-    // Dashboard stats
-    public function getStats() {
-        $conn = $this->db->connect();
-        $stats = [
-            'totalUsers' => $conn->query("SELECT COUNT(*) FROM users WHERE Is_Admin = 0")->fetchColumn(),
-            'totalWorkouts' => $conn->query("SELECT COUNT(*) FROM workout_plan")->fetchColumn(),
-            'recentActivities' => $conn->query("SELECT * FROM workout_plan ORDER BY Created_Date DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC)
+    // Get All Users
+    public function getAllUsers() {
+        $users = $this->user->getAllUsers();
+        return [
+            "success" => true,
+            "users" => $users
         ];
-        return $stats;
     }
 
-    // Manage users
-    public function getUsers() {
-        $conn = $this->db->connect();
-        return $conn->query("SELECT ID, FirstName, LastName, Email, Is_Verified FROM users WHERE Is_Admin = 0")->fetchAll(PDO::FETCH_ASSOC);
+    // Delete User
+    public function deleteUser($id) {
+        if (!$id) {
+            return ["success" => false, "message" => "Missing user ID."];
+        }
+
+        if ($this->user->deleteUser($id)) {
+            return ["success" => true, "message" => "User deleted successfully."];
+        }
+
+        return ["success" => false, "message" => "Failed to delete user."];
     }
 
-    public function deleteUser($userId) {
-        $conn = $this->db->connect();
-        $stmt = $conn->prepare("DELETE FROM users WHERE ID = ? AND Is_Admin = 0");
-        return $stmt->execute([$userId]);
+    // Dashboard Queries
+    public function getDashboardStats() {
+        $stats = [];
+
+        // Total Users
+        $stats['totalUsers'] = $this->db->query("SELECT COUNT(*) FROM user WHERE Role='user'")->fetchColumn();
+
+        // Verified Users
+        $stats['verifiedUsers'] = $this->db->query("SELECT COUNT(*) FROM user WHERE Role='user' AND Is_Verified = 1")->fetchColumn();
+
+        // Unverified users (computed)
+        $stats['unverifiedUsers'] = $stats['totalUsers'] - $stats['verifiedUsers'];
+
+        // All Generated Workouts
+        $stats['totalWorkouts'] = $this->db->query("SELECT COUNT(*) FROM generated_workout")->fetchColumn();
+
+        // API Logs
+        $stats['totalApiLogs'] = $this->db->query("SELECT COUNT(*) FROM api_logs")->fetchColumn();
+
+        return ["success" => true, "stats" => $stats];
+    }
+    // Monthly user growth (last 12 months)
+    public function getMonthlyUserGrowth($monthsBack = 12) {
+        $base = $this->getMonthRange($monthsBack);
+
+        $sql = "SELECT DATE_FORMAT(Created_At, '%Y-%m') AS m, COUNT(*) AS c
+                FROM user
+                WHERE Created_At >= DATE_SUB(CURDATE(), INTERVAL :months MONTH)
+                GROUP BY m";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(["months" => $monthsBack]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $base[$row['m']] = (int)$row['c'];
+        }
+
+        // Convert to Recharts-friendly array
+        $output = [];
+        foreach ($base as $month => $count) {
+            $output[] = ["month" => $month, "count" => $count];
+        }
+
+        return ["success" => true, "data" => $output];
     }
 
-    // Manage workouts
-    public function getWorkouts() {
-        $conn = $this->db->connect();
-        return $conn->query("SELECT * FROM workout_plan")->fetchAll(PDO::FETCH_ASSOC);
+    // Verification breakdown
+    public function getVerificationBreakdown() {
+        $sql = "SELECT Is_Verified AS verified, COUNT(*) AS count FROM user GROUP BY Is_Verified";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return ["success" => true, "data" => $rows];
     }
 
-    public function deleteWorkout($workoutId) {
-        $conn = $this->db->connect();
-        $stmt = $conn->prepare("DELETE FROM workout_plan WHERE Workout_ID = ?");
-        return $stmt->execute([$workoutId]);
+    // Monthly generated workouts (last 12 months)
+    public function getMonthlyWorkouts($monthsBack = 12) {
+        $base = $this->getMonthRange($monthsBack);
+
+        $sql = "SELECT DATE_FORMAT(Created_At, '%Y-%m') AS m, COUNT(*) AS c
+                FROM generated_workout
+                WHERE Created_At >= DATE_SUB(CURDATE(), INTERVAL :months MONTH)
+                GROUP BY m";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(["months" => $monthsBack]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $base[$row['m']] = (int)$row['c'];
+        }
+
+        $output = [];
+        foreach ($base as $month => $count) {
+            $output[] = ["month" => $month, "count" => $count];
+        }
+
+        return ["success" => true, "data" => $output];
     }
 
-    // API logs
-    public function getAPILogs() {
-        $conn = $this->db->connect();
-        return $conn->query("SELECT * FROM api_logs ORDER BY Request_Time DESC")->fetchAll(PDO::FETCH_ASSOC);
+    // Recent users (latest 6)
+    public function getRecentUsers() {
+        $sql = "SELECT User_ID, FirstName, LastName, Email, Is_Verified, Created_At, Role FROM user ORDER BY Created_At DESC LIMIT 6";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return ["success" => true, "data" => $rows];
     }
+
+    // Optional: get top workouts (if you want later)
+    public function getTopWorkouts() {
+        // Placeholder: e.g. top by frequency if you store references
+        return ["success" => true, "data" => []];
+    }
+
+    // Generate continuous months array
+    private function getMonthRange($monthsBack = 12) {
+        $range = [];
+        for ($i = $monthsBack - 1; $i >= 0; $i--) {
+            $key = date("Y-m", strtotime("-$i months"));
+            $range[$key] = 0; 
+        }
+        return $range;
+    }
+   
 }
+?>
