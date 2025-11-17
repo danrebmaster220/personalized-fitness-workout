@@ -138,19 +138,91 @@ class AdminController {
 
     // Generated Workouts Queries
     public function getGeneratedWorkouts() {
-        $query = "
-            SELECT gw.*, u.FirstName, u.LastName, u.Email 
-            FROM generated_workout gw
-            LEFT JOIN user u ON gw.User_ID = u.User_ID
-            ORDER BY gw.Created_At DESC
-        ";
-        $stmt = $this->db->query($query);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // If workout result columns are JSON strings, ensure they are returned as strings
+        // pagination
+        $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+        $offset = ($page - 1) * $limit;
+
+        // filters
+        $from = $_GET['from'] ?? null;
+        $to   = $_GET['to'] ?? null;
+        $search = $_GET['search'] ?? null;
+        $goal = $_GET['goal'] ?? null;
+
+        $params = [];
+        $where = [];
+
+        // Date filtering
+        if ($from) {
+            $where[] = "gw.Created_At >= :from";
+            $params[":from"] = $from . " 00:00:00";
+        }
+
+        if ($to) {
+            $where[] = "gw.Created_At <= :to";
+            $params[":to"] = $to . " 23:59:59";
+        }
+
+        // Search filter
+        if ($search) {
+            $where[] = "(u.FirstName LIKE :search 
+                    OR u.LastName LIKE :search 
+                    OR gw.Goal LIKE :search)";
+            $params[":search"] = "%$search%";
+        }
+
+        // Goal filter
+        if ($goal) {
+            $where[] = "gw.Goal = :goal";
+            $params[":goal"] = $goal;
+        }
+
+        $whereSQL = count($where) ? "WHERE " . implode(" AND ", $where) : "";
+
+        // 1) Count total
+        $countQuery = "
+            SELECT COUNT(*) 
+            FROM generated_workout gw
+            LEFT JOIN user u ON u.User_ID = gw.User_ID
+            $whereSQL
+        ";
+
+        $countStmt = $this->db->prepare($countQuery);
+        $countStmt->execute($params);
+        $total = $countStmt->fetchColumn();
+
+        // 2) Fetch paginated rows
+        $query = "
+            SELECT gw.*, u.FirstName, u.LastName, u.Email
+            FROM generated_workout gw
+            LEFT JOIN user u ON u.User_ID = gw.User_ID
+            $whereSQL
+            ORDER BY gw.Created_At DESC
+            LIMIT :limit OFFSET :offset
+        ";
+
+        $stmt = $this->db->prepare($query);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
+        $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
+        $workouts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         return [
             "success" => true,
-            "workouts" => $rows
+            "workouts" => $workouts,
+            "pagination" => [
+                "page" => $page,
+                "limit" => $limit,
+                "total" => $total,
+                "totalPages" => ceil($total / $limit)
+            ]
         ];
     }
 

@@ -1,24 +1,26 @@
-/* Minimal overrides for the detail modal */
-.gen-workout-modal .confirm-modal-container {
-  width: 92%;
-  max-width: 900px;
-  max-height: 80vh;
-  overflow-y: auto;
+/* SECTION SPACING */
+.gw-section {
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #2c3e50;
 }
 
-.gw-section { margin-bottom: 12px; }
+.gw-section strong {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+/* JSON BOX */
 .json-pre {
-  background: #0f1724;
-  color: #e6eef8;
+  background: #0f172a;       
+  color: #e6eef8;            
   padding: 12px;
-  border-radius: 6px;
-  overflow: auto;
+  border-radius: 8px;
+  overflow-x: auto;
   font-size: 13px;
+  font-family: "JetBrains Mono", monospace;
+  line-height: 1.4;
+  border: 1px solid rgba(255,255,255,0.05);
 }
-.action-btn {
-  padding: 8px 12px;
-  background: #0077ff;
-  color: white;
-  border-radius: 6px;
-  text-decoration: none;
-}
+
