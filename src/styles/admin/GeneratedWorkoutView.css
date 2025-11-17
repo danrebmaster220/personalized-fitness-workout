@@ -1,0 +1,24 @@
+/* Minimal overrides for the detail modal */
+.gen-workout-modal .confirm-modal-container {
+  width: 92%;
+  max-width: 900px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.gw-section { margin-bottom: 12px; }
+.json-pre {
+  background: #0f1724;
+  color: #e6eef8;
+  padding: 12px;
+  border-radius: 6px;
+  overflow: auto;
+  font-size: 13px;
+}
+.action-btn {
+  padding: 8px 12px;
+  background: #0077ff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}

@@ -11,14 +11,17 @@ export default function UserManagement() {
   const [filterGender, setFilterGender] = useState("all");
   const [filterFitness, setFilterFitness] = useState("all");
 
+  // Modal states
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  // Open modal
   const confirmDelete = (user) => {
     setSelectedUser(user);
     setShowModal(true);
   };
 
+  // Confirm delete
   const deleteUserConfirmed = async () => {
     try {
       const res = await axios.delete(
@@ -30,6 +33,7 @@ export default function UserManagement() {
     } catch (err) {
       console.error("Delete error:", err);
     }
+
     setShowModal(false);
     setSelectedUser(null);
   };
@@ -61,8 +65,7 @@ export default function UserManagement() {
       (filterVerification === "verified" && u.Is_Verified == 1) ||
       (filterVerification === "unverified" && u.Is_Verified == 0);
 
-    const matchGender =
-      filterGender === "all" || u.Gender === filterGender;
+    const matchGender = filterGender === "all" || u.Gender === filterGender;
 
     const matchFitness =
       filterFitness === "all" || u.Fitness_Level === filterFitness;
@@ -105,59 +108,62 @@ export default function UserManagement() {
       </div>
 
       {/* Users Table */}
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Verification</th>
-            <th>Gender</th>
-            <th>Fitness</th>
-            <th>Registered</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {filteredUsers.length === 0 ? (
+      <div className="user-table-wrapper">
+        <table className="user-table">
+          <thead>
             <tr>
-              <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>
-                No users found.
-              </td>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Verification</th>
+              <th>Gender</th>
+              <th>Fitness</th>
+              <th>Registered</th>
+              <th>Actions</th>
             </tr>
-          ) : (
-            filteredUsers.map((u) => (
-              <tr key={u.User_ID}>
-                <td>{u.User_ID}</td>
-                <td>{u.FirstName} {u.LastName}</td>
-                <td>{u.Email}</td>
-                <td>{u.Is_Verified ? "Verified" : "Not Verified"}</td>
-                <td>{u.Gender}</td>
-                <td>{u.Fitness_Level}</td>
-                <td>{u.Created_At}</td>
-                <td>
-                  {u.Role !== "admin" && (
-                    <button className="delete-btn" onClick={() => confirmDelete(u)}>
-                      Delete
-                    </button>
-                  )}
+          </thead>
+
+          <tbody>
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>
+                  No users found.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-      
+            ) : (
+              filteredUsers.map((u) => (
+                <tr key={u.User_ID}>
+                  <td>{u.User_ID}</td>
+                  <td>{u.FirstName} {u.LastName}</td>
+                  <td>{u.Email}</td>
+                  <td>{u.Is_Verified ? "Verified" : "Not Verified"}</td>
+                  <td>{u.Gender}</td>
+                  <td>{u.Fitness_Level}</td>
+                  <td>{u.Created_At}</td>
+                  <td className="actions-col">
+                    {u.Role !== "admin" ? (
+                      <button className="delete-btn" onClick={() => confirmDelete(u)}>
+                        Delete
+                      </button>
+                    ) : (
+                      <span className="no-action">—</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
       {/* Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-box">
             <h3>Confirm Delete</h3>
             <p>
-              Are you sure you want to delete <strong>
-              {selectedUser.FirstName} {selectedUser.LastName}
-              </strong>?
+              Are you sure you want to delete{" "}
+              <strong>{selectedUser?.FirstName} {selectedUser?.LastName}</strong>?
             </p>
 
             <div className="modal-actions">

@@ -1,39 +1,63 @@
 .admin-page {
-  padding: 20px;
+  padding: 25px 30px;
+  animation: fadeIn 0.3s ease;
 }
 
 .admin-page h2 {
-  margin-bottom: 18px;
-  font-size: 24px;
-  font-weight: 700;
-}
-.user-management-container {
-  padding: 20px;
-  max-width: 100%;
-  overflow-x: hidden;
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
-.user-management-container h2 {
+/* Filters */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 20px;
-  text-align: left;
-  font-size: 24px;
-  font-weight: bold;
-  color: #222;
+  align-items: center;
+}
+
+.filters input,
+.filters select {
+  height: 42px;   
+  min-height: 42px;        
+  padding: 0 14px;        
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  transition: 0.2s ease;
+  outline: none;
+  box-sizing: border-box; 
+}
+
+.filters input[type="text"] {
+  flex: 1 1 260px;
+  min-width: 200px;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25);
 }
 
 /* Table */
 .user-table-wrapper {
   width: 100%;
-  overflow-x: auto; 
+  overflow-x: hidden;
 }
 
 .user-table {
   width: 100%;
   border-collapse: collapse;
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e0e0e0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
 }
 
 .user-table thead {
@@ -42,19 +66,24 @@
 
 .user-table th {
   text-align: left;
-  padding: 12px;
-  font-weight: bold;
+  padding: 14px 10px;
+  font-weight: 600;
   font-size: 15px;
-  color: #333;
+  color: #34495e;
   border-bottom: 2px solid #e5e5e5;
 }
 
 .user-table td {
-  padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
-  color: #444;
+  padding: 13px 10px;
+  border-bottom: 1px solid #f1f1f1;
+  color: #555;
   font-size: 14px;
   vertical-align: middle;
+}
+
+
+.user-table tr:nth-child(even) {
+  background: #fafafa;
 }
 
 .user-table tr:last-child td {
@@ -64,7 +93,7 @@
 /* Delete Button */
 .delete-btn {
   padding: 6px 12px;
-  background: #ef4444;
+  background: #e74c3c;
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -72,12 +101,10 @@
   font-weight: 500;
   cursor: pointer;
   transition: 0.2s ease;
-  margin: 15px 0;
-  margin-right: 10px;
 }
 
 .delete-btn:hover {
-  background: #dc2626;
+  background: #c0392b;
 }
 
 .no-action {
@@ -85,56 +112,16 @@
   justify-content: center;
   color: #9ca3af;
   font-size: 14px;
-  margin-right: 10px;
 }
 
-/* Search & Filters */
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-
-.filters input[type="text"] {
-  flex: 1 1 250px;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 15px;
-  transition: all 0.2s ease;
-}
-
-.filters select {
-  flex: 1 1 180px;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: white;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.filters input[type="text"]:focus,
-.filters select:focus {
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-  outline: none;
-}
-
-/* Modal Overlay */
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -142,13 +129,13 @@
 }
 
 .modal-box {
-  background: white;
+  background: #ffffff;
   padding: 25px;
   width: 90%;
-  max-width: 400px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  animation: fadeIn 0.2s ease;
+  max-width: 420px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: fadeIn 0.25s ease;
 }
 
 .modal-box h3 {
@@ -195,20 +182,30 @@
   background: #dc2626;
 }
 
-/* Fade animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+/* Responsive */
+@media (max-width: 900px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100%;
+    height: 42px !important;   /* Extra safety on mobile */
+  }
+
+  .user-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .user-table, 
-  .user-table thead, 
-  .user-table tbody, 
-  .user-table th, 
-  .user-table td, 
-  .user-table tr {
+  .user-table tr,
+  .user-table td,
+  .user-table th {
     display: block;
     width: 100%;
   }
@@ -222,20 +219,13 @@
     margin-bottom: 15px;
     padding: 12px;
     border-radius: 10px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #eaeaea;
   }
 
   .user-table td {
     display: flex;
     justify-content: space-between;
-    align-items: center; 
     padding: 10px 0;
-    font-size: 14px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .user-table td:last-child {
-    border-bottom: none;
   }
 
   .user-table td::before {
@@ -243,21 +233,12 @@
     font-weight: bold;
     color: #333;
   }
-  .delete-btn {
-    padding: 8px 14px;
-    font-size: 14px;
-  }
+}
 
-  .search-filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-btn,
-  .reset-btn,
-  .filter-select {
-    width: 100%;
-  }
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 body {

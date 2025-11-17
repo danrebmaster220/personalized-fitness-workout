@@ -1,0 +1,96 @@
+/* Fullscreen backdrop */
+.wm-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(13, 27, 42, 0.55); /* FitSync dark blue transparent */
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+}
+
+/* Modal Container */
+.confirm-modal-container {
+  width: 90%;
+  max-width: 430px;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  animation: modalPop 0.25s ease-out;
+}
+
+/* Title */
+.confirm-modal-container h3 {
+  font-size: 22px;
+  color: #e0e1dd;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* Text */
+.confirm-modal-container p {
+  font-size: 15px;
+  color: #cbd5e1;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* Button row */
+.confirm-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Cancel Button */
+.btn-cancel {
+  padding: 8px 18px;
+  background: rgba(241, 245, 249, 0.2);
+  border: 1px solid rgba(241, 245, 249, 0.35);
+  border-radius: 10px;
+  color: #e0e1dd;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.btn-cancel:hover {
+  background: rgba(241, 245, 249, 0.35);
+}
+
+/* Confirm Button */
+.btn-confirm {
+  padding: 9px 20px;
+  background: #e63946; /* FitSync red delete color */
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(230, 57, 70, 0.35);
+  transition: 0.25s ease;
+}
+
+.btn-confirm:hover {
+  background: #d62839;
+  box-shadow: 0 4px 14px rgba(230, 57, 70, 0.55);
+}
+
+/* Pop Animation */
+@keyframes modalPop {
+  0% {
+    transform: translateY(15px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}

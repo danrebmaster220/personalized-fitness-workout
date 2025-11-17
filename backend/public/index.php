@@ -94,6 +94,7 @@ switch ($route) {
             $admin = new AdminController();
 
             switch ($action) {
+                // Dashboard
                 case 'getDashboardStats':
                     echo json_encode($admin->getDashboardStats());
                     break;
@@ -120,6 +121,7 @@ switch ($route) {
                     echo json_encode($admin->getRecentUsers());
                     break;
                 
+                // User Management
                 case 'getAllUsers':
                     echo json_encode($admin->getAllUsers());
                     break;
@@ -127,6 +129,26 @@ switch ($route) {
                 case 'deleteUser':
                     $id = $_GET['id'] ?? null;
                     echo json_encode($admin->deleteUser($id));
+                    break;
+                
+                // Generated Workouts
+                case 'getGeneratedWorkouts':
+                    echo json_encode($admin->getGeneratedWorkouts());
+                    break;
+
+                case 'getGeneratedWorkoutById':
+                    $id = $_GET['id'] ?? null;
+                    echo json_encode($admin->getGeneratedWorkoutById($id));
+                    break;
+
+                case 'exportGeneratedWorkout':
+                    $id = $_GET['id'] ?? null;
+                    echo json_encode($admin->exportWorkoutJson($id));
+                    break;
+
+                case 'deleteGeneratedWorkout':
+                    $id = $_GET['id'] ?? null;
+                    echo json_encode($admin->deleteGeneratedWorkout($id));
                     break;
 
                 default:

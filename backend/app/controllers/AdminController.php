@@ -135,6 +135,67 @@ class AdminController {
         }
         return $range;
     }
+
+    // Generated Workouts Queries
+    public function getGeneratedWorkouts() {
+        $query = "
+            SELECT gw.*, u.FirstName, u.LastName, u.Email 
+            FROM generated_workout gw
+            LEFT JOIN user u ON gw.User_ID = u.User_ID
+            ORDER BY gw.Created_At DESC
+        ";
+        $stmt = $this->db->query($query);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // If workout result columns are JSON strings, ensure they are returned as strings
+        return [
+            "success" => true,
+            "workouts" => $rows
+        ];
+    }
+
+    // Get single generated workout detail by id
+    public function getGeneratedWorkoutById($id) {
+        $query = "
+            SELECT gw.*, u.FirstName, u.LastName, u.Email 
+            FROM generated_workout gw
+            LEFT JOIN user u ON gw.User_ID = u.User_ID
+            WHERE gw.Generate_ID = :id
+            LIMIT 1
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([":id" => $id]);
+        $workout = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$workout) {
+            return ["success" => false, "message" => "Workout not found."];
+        }
+
+        // optionally decode json fields to arrays for clarity (frontend can also parse)
+        $workout['Workout_Result_decoded'] = json_decode($workout['Workout_Result'], true);
+        $workout['Meal_Result_decoded'] = json_decode($workout['Meal_Result'], true);
+        $workout['Body_Condition_Result_decoded'] = json_decode($workout['Body_Condition_Result'], true);
+
+        return ["success" => true, "workout" => $workout];
+    }
+
+    // Optional: export a single workout as simple downloadable JSON (or implement PDF creation)
+    public function exportWorkoutJson($id) {
+        $res = $this->getGeneratedWorkoutById($id);
+        if (!$res['success']) return $res;
+
+        $payload = $res['workout'];
+        // return JSON (frontend will handle download)
+        return ["success" => true, "payload" => $payload];
+    }
+
+    public function deleteGeneratedWorkout($id) {
+        if (!$id) return ["success"=>false,"message"=>"Invalid id"];
+        $stmt = $this->db->prepare("DELETE FROM generated_workout WHERE Generate_ID = ?");
+        if ($stmt->execute([$id])) return ["success"=>true,"message"=>"Deleted"];
+        return ["success"=>false,"message"=>"Delete failed"];
+    }
+
    
 }
 ?>
