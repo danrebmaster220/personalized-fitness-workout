@@ -1,12 +1,103 @@
-/* inside src/styles/ */
-@import "./Sidebar.css";
+.profile-page {
+  color: #111010;   /* high contrast text */
+  padding: 20px;
+  min-height: 100vh;
+  overflow-y: auto;
+}
 
-.profile-card {
-  background:#fff;
-  padding:2rem;
-  border-radius:20px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.08);
-  font-size:1rem;
-  line-height:2;
-  color:#222;
+.profile-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #0d0d0d;
+}
+
+/* Container / Section Card */
+.profile-section {
+  background: #ffffff; /* clean white card */
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb; /* soft border */
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+}
+
+.profile-section h2 {
+  margin-bottom: 15px;
+  color: #111010;
+  font-weight: 600;
+}
+
+/* Grid Layout */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* Label + Field */
+.profile-grid label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #333333;  /* darker contrast */
+  font-weight: 500;
+}
+
+/* Input Fields */
+.profile-grid input,
+.profile-grid select {
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1; /* slate-300 */
+  background: #f9fafb;       /* subtle white */
+  color: #111010;
+  transition: 0.2s;
+}
+
+.profile-grid input:focus,
+.profile-grid select:focus {
+  border-color: #0066ff;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(0,102,255,0.15);
+  outline: none;
+}
+
+/* Profile Image section */
+.profile-image-box {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-preview {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0066ff;
+  box-shadow: 0 2px 10px rgba(0,102,255,0.2);
+}
+
+/* Save button area */
+.profile-actions {
+  margin-top: 20px;
+  text-align: right;
+}
+
+/* Primary Button */
+.btn-primary {
+  padding: 10px 20px;
+  background: #0066ff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #0052cc;
 }

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../app/core/Database.php';
 require_once __DIR__ . '/../../app/models/Users.php';
-require_once __DIR__ . '/../../config/email.php'; // ⬅ central email sender
+require_once __DIR__ . '/../../config/email.php'; // email sender
 
 class UserController {
     private $db;
@@ -14,7 +14,7 @@ class UserController {
         $this->user = new User($this->db);
     }
 
-    // Login 
+    // LOGIN
     public function login($email, $password) {
         $user = $this->user->findByEmail($email);
 
@@ -44,7 +44,7 @@ class UserController {
         ];
     }
 
-    // Register 
+    // REGISTER
     public function register($data) {
 
         if ($this->user->findByEmail($data['email'])) {
@@ -69,10 +69,7 @@ class UserController {
         );
 
         if ($success) {
-            // Send verification email
-            sendAppEmail($data['email'], 'verification', [
-                'token' => $token
-            ]);
+            sendAppEmail($data['email'], 'verification', ['token' => $token]);
 
             return [
                 "success" => true,
@@ -83,7 +80,7 @@ class UserController {
         return ["success" => false, "message" => "Registration failed."];
     }
 
-    // Verify Email 
+    // VERIFY EMAIL
     public function verify($token) {
         if ($this->user->verifyUser($token)) {
             return ["success" => true, "message" => "Account verified successfully!"];
@@ -91,7 +88,7 @@ class UserController {
         return ["success" => false, "message" => "Invalid or expired verification token."];
     }
 
-    // Forgot Password
+    // FORGOT PASSWORD
     public function forgot($email) {
         $user = $this->user->findByEmail($email);
 
@@ -105,13 +102,12 @@ class UserController {
             return ["success" => false, "message" => "Failed to create reset token."];
         }
 
-        // Send reset email
         sendAppEmail($email, "password-reset", ["token" => $token]);
 
         return ["success" => true, "message" => "Reset link sent to your email."];
     }
 
-    // Reset Password
+    // RESET PASSWORD
     public function reset($token, $newPassword) {
         $user = $this->user->findByResetToken($token);
 
@@ -127,7 +123,7 @@ class UserController {
         return ["success" => false, "message" => "Failed to reset password."];
     }
 
-    // Get Profile
+    // GET PROFILE
     public function getUserProfile($userId) {
         $user = $this->user->findById($userId);
 
@@ -139,32 +135,98 @@ class UserController {
         return ["success" => false, "message" => "User not found."];
     }
 
-    // Update Profile
+    // NEW: UPDATE PROFILE (Fields only, JSON body)
     public function updateProfile($userId, $data) {
-        if ($this->user->updateProfile($userId, $data)) {
-            return ["success" => true, "message" => "Profile updated successfully."];
+        $allowed = [
+            "FirstName", "LastName", "Gender",
+            "Height", "Weight", "Age",
+            "Fitness_Level", "Activity_Level"
+        ];
+
+        $cleanData = [];
+        foreach ($allowed as $key) {
+            if (isset($data[$key])) {
+                $cleanData[$key] = $data[$key];
+            }
         }
+
+        if (empty($cleanData)) {
+            return ["success" => false, "message" => "No valid fields to update."];
+        }
+
+        if ($this->user->updateProfile($userId, $cleanData)) {
+            $user = $this->user->findById($userId);
+            unset($user['Password']);
+            return ["success" => true, "user" => $user];
+        }
+
         return ["success" => false, "message" => "Failed to update profile."];
     }
 
-    // Change Password
-    public function changePassword($userId, $oldPassword, $newPassword) {
-        $user = $this->user->findById($userId);
-
-        if (!$user || !password_verify($oldPassword, $user['Password'])) {
-            return ["success" => false, "message" => "Incorrect old password."];
+    // NEW: UPLOAD PROFILE IMAGE
+    public function uploadImage($data, $files) {
+        if (!isset($data['userId']) || !isset($files['image'])) {
+            return ["success" => false, "message" => "Invalid request"];
         }
 
-        $hashed = password_hash($newPassword, PASSWORD_BCRYPT);
+        $userId = $data['userId'];
+        $image = $files['image'];
 
-        if ($this->user->updatePasswordById($userId, $hashed)) {
-            return ["success" => true, "message" => "Password changed successfully."];
+        // Validate
+        $allowed = ["image/jpeg", "image/png", "image/jpg"];
+        if (!in_array($image["type"], $allowed)) {
+            return ["success" => false, "message" => "Invalid file type."];
         }
 
-        return ["success" => false, "message" => "Failed to change password."];
+        if ($image["size"] > 3 * 1024 * 1024) { // 3MB limit
+            return ["success" => false, "message" => "File too large."];
+        }
+
+        // Create folder if not exists
+        $uploadDir = __DIR__ . "/../../uploads/profiles/";
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        // Unique file name
+        $ext = pathinfo($image["name"], PATHINFO_EXTENSION);
+        $fileName = "user_" . $userId . "_" . time() . "." . $ext;
+
+        $filePath = $uploadDir . $fileName;
+        $dbPath = "/uploads/profiles/" . $fileName;
+
+        if (!move_uploaded_file($image["tmp_name"], $filePath)) {
+            return ["success" => false, "message" => "Upload failed."];
+        }
+
+        // Save to DB
+        if ($this->user->uploadProfileImage($userId, $dbPath)) {
+            return [
+                "success" => true,
+                "message" => "Profile image updated.",
+                "image"   => $dbPath
+            ];
+        }
+
+        return ["success" => false, "message" => "Database update failed."];
     }
 
-    // Resend Email Verification
+    //  NEW: CHANGE PASSWORD (JSON Body)
+    public function changePassword($userId, $old, $new) {
+        $user = $this->user->findById($userId);
+
+        if (!$user) return ["success" => false, "message" => "User not found"];
+        if (!password_verify($old, $user['Password'])) {
+            return ["success" => false, "message" => "Incorrect old password"];
+        }
+
+        $hash = password_hash($new, PASSWORD_BCRYPT);
+        $this->user->updatePasswordById($userId, $hash);
+
+        return ["success" => true, "message" => "Password updated"];
+    }
+
+    // RESEND VERIFICATION EMAIL
     public function resendVerification($userId) {
         $user = $this->user->findById($userId);
 
@@ -177,7 +239,6 @@ class UserController {
             return ["success" => false, "message" => "Failed to generate verification token."];
         }
 
-        // Send verification email
         sendAppEmail($user['Email'], "verification", ["token" => $token]);
 
         return ["success" => true, "message" => "Verification email resent."];

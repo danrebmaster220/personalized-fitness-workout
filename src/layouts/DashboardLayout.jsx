@@ -1,14 +1,14 @@
-// DashboardLayout.jsx and css inside src/layouts/
 import React from "react";
-import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import "./DashboardLayout.css";
+import { Outlet } from "react-router-dom";
+import "../styles/Sidebar.css";  // ensure sidebar styles load
 
 export default function DashboardLayout() {
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-wrapper">
       <Sidebar />
-      <div className="dashboard-container">
+
+      <div className="main-content">
         <Outlet />
       </div>
     </div>

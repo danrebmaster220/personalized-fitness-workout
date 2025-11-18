@@ -41,7 +41,7 @@ export default function AdminSidebar() {
           <FaServer className="icon" /> API Logs
         </NavLink>
 
-        <NavLink to="/admin/reports">
+        <NavLink to="/admin/system-reports">
           <FaChartLine className="icon" /> System Reports
         </NavLink>
 

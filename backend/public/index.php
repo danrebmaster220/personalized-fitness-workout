@@ -83,6 +83,12 @@ switch ($route) {
                 echo json_encode($controller->resendVerification($_GET['userId'] ?? ''));
                 break;
 
+            case "uploadImage":
+                require_once "../controllers/UserController.php";
+                $controller = new UserController();
+                echo json_encode($controller->uploadImage($_POST, $_FILES));
+                break;
+
             default:
                 echo json_encode(["success" => false, "message" => "Invalid user action"]);
         }
@@ -149,6 +155,27 @@ switch ($route) {
                 case 'deleteGeneratedWorkout':
                     $id = $_GET['id'] ?? null;
                     echo json_encode($admin->deleteGeneratedWorkout($id));
+                    break;
+
+                // System Reports
+                case "getSystemStats":
+                    $ctrl = new ReportsController();
+                    echo json_encode($ctrl->systemStats());
+                    break;
+
+                case "getUserStats":
+                    $ctrl = new ReportsController();
+                    echo json_encode($ctrl->userStats());
+                    break;
+
+                case "getWorkoutStats":
+                    $ctrl = new ReportsController();
+                    echo json_encode($ctrl->workoutStats());
+                    break;
+
+                case "getApiStats":
+                    $ctrl = new ReportsController();
+                    echo json_encode($ctrl->apiStats());
                     break;
 
                 default:

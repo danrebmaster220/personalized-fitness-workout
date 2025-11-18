@@ -1,8 +1,9 @@
-.dashboard-layout {
-  display: flex;
+.main-content {
+  flex: 1;
+  overflow-y: auto;
 }
 
-.dashboard-container {
+.dashboard-wrapper {
   margin-left:260px;
   width:calc(100% - 260px);
   background:linear-gradient(to bottom right,#f4f8ff,#eaf1ff);
@@ -10,8 +11,8 @@
 }
 
 @media(max-width:900px){
-  .dashboard-container{
-    margin-left:0;
-    width:100%;
+  .dashboard-wrapper {
+    margin-left: 0;
+    width: 100%;
   }
 }

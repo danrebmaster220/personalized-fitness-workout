@@ -7,6 +7,10 @@
   --bg-light: #f2f5fa;
 }
 
+.main-content {
+  padding-left: 260px;
+}
+
 .sidebar {
   width:260px;
   height:100vh;
@@ -70,3 +74,29 @@
   transition:.3s;
 }
 .logout-btn:hover{color:var(--primary-blue);}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 220px;
+  }
+  .main-content {
+    padding-left: 220px;
+  }
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    position: fixed;
+    width: 200px;
+    transform: translateX(-100%);
+    transition: 0.3s;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    padding-left: 0;
+  }
+}

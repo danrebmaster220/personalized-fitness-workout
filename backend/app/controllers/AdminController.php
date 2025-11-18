@@ -1,15 +1,19 @@
 <?php
 require_once __DIR__ . '/../core/Database.php';
 require_once __DIR__ . '/../models/Users.php';
+require_once __DIR__ . '/../models/AdminLogs.php';
+require_once __DIR__ . '/../models/GeneratedWorkoutModel.php';
 
 class AdminController {
     private $db;
     private $user;
+    private $logs;
 
     public function __construct() {
         $database = new Database();
         $this->db = $database->connect();
         $this->user = new User($this->db);
+        $this->logs = new AdminLogs($this->db);
     }
 
     // Get All Users
@@ -139,135 +143,81 @@ class AdminController {
     // Generated Workouts Queries
     public function getGeneratedWorkouts() {
 
-        // pagination
-        $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
-        $offset = ($page - 1) * $limit;
+        require_once __DIR__ . "/../models/GeneratedWorkoutModel.php";
 
-        // filters
-        $from = $_GET['from'] ?? null;
-        $to   = $_GET['to'] ?? null;
-        $search = $_GET['search'] ?? null;
-        $goal = $_GET['goal'] ?? null;
+        $model = new GeneratedWorkoutModel($this->db);
 
-        $params = [];
-        $where = [];
+        $filters = [
+            "page"   => isset($_GET["page"]) ? (int)$_GET["page"] : 1,
+            "limit"  => isset($_GET["limit"]) ? (int)$_GET["limit"] : 10,
+            "search" => $_GET["search"] ?? null,
+            "goal"   => $_GET["goal"] ?? null,
+            "from"   => $_GET["from"] ?? null,
+            "to"     => $_GET["to"] ?? null,
+        ];
 
-        // Date filtering
-        if ($from) {
-            $where[] = "gw.Created_At >= :from";
-            $params[":from"] = $from . " 00:00:00";
-        }
+        $result = $model->getGeneratedWorkouts($filters);
 
-        if ($to) {
-            $where[] = "gw.Created_At <= :to";
-            $params[":to"] = $to . " 23:59:59";
-        }
+        echo json_encode([
+            "success" => true,
+            "workouts" => $result["workouts"],
+            "pagination" => [
+                "page" => $result["page"],
+                "limit" => $result["limit"],
+                "total" => $result["total"],
+                "totalPages" => $result["totalPages"]
+            ]
+        ]);
+    }
 
-        // Search filter
-        if ($search) {
-            $where[] = "(u.FirstName LIKE :search 
-                    OR u.LastName LIKE :search 
-                    OR gw.Goal LIKE :search)";
-            $params[":search"] = "%$search%";
-        }
 
-        // Goal filter
-        if ($goal) {
-            $where[] = "gw.Goal = :goal";
-            $params[":goal"] = $goal;
-        }
+    // API Logs Queries
+    public function getApiLogs()
+    {
+        $filters = [
+            "page"   => isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1,
+            "limit"  => isset($_GET['limit']) ? max(1, (int)$_GET['limit']) : 10,
+            "search" => $_GET['search'] ?? null,
+            "method" => $_GET['method'] ?? null,
+            "status" => $_GET['status'] ?? null,
+            "from"   => $_GET['from'] ?? null,
+            "to"     => $_GET['to'] ?? null,
+        ];
 
-        $whereSQL = count($where) ? "WHERE " . implode(" AND ", $where) : "";
-
-        // 1) Count total
-        $countQuery = "
-            SELECT COUNT(*) 
-            FROM generated_workout gw
-            LEFT JOIN user u ON u.User_ID = gw.User_ID
-            $whereSQL
-        ";
-
-        $countStmt = $this->db->prepare($countQuery);
-        $countStmt->execute($params);
-        $total = $countStmt->fetchColumn();
-
-        // 2) Fetch paginated rows
-        $query = "
-            SELECT gw.*, u.FirstName, u.LastName, u.Email
-            FROM generated_workout gw
-            LEFT JOIN user u ON u.User_ID = gw.User_ID
-            $whereSQL
-            ORDER BY gw.Created_At DESC
-            LIMIT :limit OFFSET :offset
-        ";
-
-        $stmt = $this->db->prepare($query);
-
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
-
-        $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
-        $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
-
-        $stmt->execute();
-        $workouts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $this->logs->getLogs($filters);
 
         return [
             "success" => true,
-            "workouts" => $workouts,
+            "logs" => $result['logs'],
             "pagination" => [
-                "page" => $page,
-                "limit" => $limit,
-                "total" => $total,
-                "totalPages" => ceil($total / $limit)
+                "page" => $filters['page'],
+                "limit" => $filters['limit'],
+                "total" => $result['total'],
+                "totalPages" => $result['total'] ? ceil($result['total'] / $filters['limit']) : 1
             ]
         ];
     }
 
-    // Get single generated workout detail by id
-    public function getGeneratedWorkoutById($id) {
-        $query = "
-            SELECT gw.*, u.FirstName, u.LastName, u.Email 
-            FROM generated_workout gw
-            LEFT JOIN user u ON gw.User_ID = u.User_ID
-            WHERE gw.Generate_ID = :id
-            LIMIT 1
-        ";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([":id" => $id]);
-        $workout = $stmt->fetch(PDO::FETCH_ASSOC);
+    public function getApiLogById($id)
+    {
+        if (!$id) return ["success" => false, "message" => "ID required"];
 
-        if (!$workout) {
-            return ["success" => false, "message" => "Workout not found."];
+        $log = $this->logs->getLogById($id);
+        if ($log) return ["success" => true, "log" => $log];
+
+        return ["success" => false, "message" => "Log not found"];
+    }
+
+    public function deleteApiLog($id)
+    {
+        if (!$id) return ["success" => false, "message" => "ID required"];
+
+        if ($this->logs->deleteLog($id)) {
+            return ["success" => true, "message" => "Log deleted"];
         }
 
-        // optionally decode json fields to arrays for clarity (frontend can also parse)
-        $workout['Workout_Result_decoded'] = json_decode($workout['Workout_Result'], true);
-        $workout['Meal_Result_decoded'] = json_decode($workout['Meal_Result'], true);
-        $workout['Body_Condition_Result_decoded'] = json_decode($workout['Body_Condition_Result'], true);
-
-        return ["success" => true, "workout" => $workout];
+        return ["success" => false, "message" => "Delete failed"];
     }
-
-    // Optional: export a single workout as simple downloadable JSON (or implement PDF creation)
-    public function exportWorkoutJson($id) {
-        $res = $this->getGeneratedWorkoutById($id);
-        if (!$res['success']) return $res;
-
-        $payload = $res['workout'];
-        // return JSON (frontend will handle download)
-        return ["success" => true, "payload" => $payload];
-    }
-
-    public function deleteGeneratedWorkout($id) {
-        if (!$id) return ["success"=>false,"message"=>"Invalid id"];
-        $stmt = $this->db->prepare("DELETE FROM generated_workout WHERE Generate_ID = ?");
-        if ($stmt->execute([$id])) return ["success"=>true,"message"=>"Deleted"];
-        return ["success"=>false,"message"=>"Delete failed"];
-    }
-
    
 }
 ?>

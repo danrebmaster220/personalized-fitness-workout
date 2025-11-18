@@ -23,8 +23,8 @@ import Profile from "./pages/user/Profile";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import GeneratedWorkouts from "./pages/admin/GeneratedWorkouts";
-import ApiLogs from "./pages/admin/ApiLogs";
-import Reports from "./pages/admin/Reports";
+import ApiLogs from "./pages/admin/ApiLogs"; 
+import SystemReports from "./pages/admin/SystemReports";  
 import Settings from "./pages/admin/Settings";
 
 export default function App() {
@@ -64,7 +64,7 @@ export default function App() {
           <Route path="users" element={<UserManagement />} />
           <Route path="generated" element={<GeneratedWorkouts />} />
           <Route path="api-logs" element={<ApiLogs />} />
-          <Route path="reports" element={<Reports />} />
+          <Route path="system-reports" element={<SystemReports />} />
           <Route path="settings" element={<Settings />} />
         </Route>
 

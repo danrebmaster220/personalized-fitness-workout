@@ -1,51 +1,166 @@
-/* inside src/styles/ */
+/* src/styles/WorkoutModal.css */
+
 .wm-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index: 1200;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
 }
+
 .wm-card {
-  width: min(980px, 96%);
-  max-height: 90vh;
-  overflow-y:auto;
-  background: #071024;
-  color: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  width: min(900px, 95%);
+  background: #ffffff;
+  color: #333;
+  border-radius: 14px;
+  padding: 22px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
 }
+
+.animate-popup {
+  animation: popup 0.25s ease;
+}
+
+@keyframes popup {
+  from {
+    transform: scale(0.93);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .wm-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
 }
+
+.wm-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
 .wm-close {
-  background: transparent;
+  width: 200px;
+  background: #bbbcbe;
   border: none;
-  color: #fff;
-  font-size: 18px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #444;
+}
+
+.section-title {
+  margin: 22px 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+}
+
+.wm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.wm-field {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.wm-field span {
+  margin-bottom: 4px;
+  color: #444;
+  font-weight: 500;
+}
+
+.wm-field input,
+.wm-field select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  font-size: 14px;
+  color: #333;
+}
+
+.metric-box {
+  margin-top: 10px;
+  padding: 12px;
+  background: #f7f9fc;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  border: 1px solid #e5e7eb;
+}
+
+.metric strong {
+  color: #111;
+}
+
+.equipment-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.equip-item {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: 1px solid #dbe1e8;
+  font-size: 14px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
   cursor: pointer;
 }
-.wm-form { margin-top: 6px; }
-.wm-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-.wm-field { display:flex; flex-direction:column; font-size:14px; }
-.wm-field input, .wm-field select {
-  margin-top:6px;
-  padding:8px 10px;
-  border-radius:8px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.02);
-  color:#fff;
+
+.wm-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
 }
-.wm-field-full { grid-column: 1 / -1; }
-.wm-equip { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
-.wm-eq-item { background: rgba(255,255,255,0.02); padding:6px 8px; border-radius:8px; font-size:13px; }
-.wm-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
-.wm-error { color:#ff7b7b; margin-top:8px; font-size:13px; }
-.btn-primary { background:#0066ff; color:#fff; padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
-.btn-secondary { background:transparent; color:#fff; padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); cursor:pointer; }
+
+button {
+  width: 200px;
+  background: #bbbcbe;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  background: #0066ff;
+  color: white;
+  height: 40px;
+  width: 200px;
+}
+
+.btn-primary:hover {
+  background: #0066ff;
+}
+
+.wm-error {
+  margin-top: 10px;
+  color: #d9534f;
+  font-weight: 500;
+}
