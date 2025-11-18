@@ -1,28 +1,33 @@
-/* PAGE */
+/* ================================
+   PAGE WRAPPER
+================================ */
 .admin-page {
-  padding: 25px 30px;
-  animation: fadeIn 0.3s ease;
+  padding: 28px 34px;
+  animation: fadeIn 0.25s ease;
+  font-family: system-ui, sans-serif;
 }
 
 .admin-page h2 {
-  font-size: 26px;
+  font-size: 28px;
   margin-bottom: 6px;
-  font-weight: 600;
-  color: #2c3e50;
+  font-weight: 700;
+  color: #1d2a38;
 }
 
 .subtitle {
-  color: #7f8c8d;
-  font-size: 14px;
-  margin-bottom: 18px;
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 20px;
 }
 
-/* FILTERS */
+/* ================================
+   FILTERS
+================================ */
 .gw-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   align-items: center;
 }
 
@@ -30,12 +35,12 @@
 .gw-filters select {
   height: 42px;
   padding: 0 14px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #d4d9e2;
   border-radius: 8px;
   font-size: 14px;
   background: white;
-  transition: 0.2s ease;
   outline: none;
+  transition: 0.2s ease;
 }
 
 .gw-filters input[type="text"] {
@@ -49,7 +54,6 @@
   box-shadow: 0 0 0 2px rgba(52,152,219,0.25);
 }
 
-/* Reset Button */
 .filter-reset {
   height: 42px;
   padding: 0 16px;
@@ -60,27 +64,88 @@
   font-size: 14px;
   cursor: pointer;
   transition: 0.2s ease;
+  font-weight: 600;
 }
 
 .filter-reset:hover {
   background: #c0392b;
 }
 
-/* TABLE WRAPPER */
+/* ================================
+   DATE FILTERS
+================================ */
+.gw-date-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.date-field label {
+  font-size: 14px;
+  color: #1d2a38;
+  font-weight: 600;
+}
+
+.date-field input {
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid #d4d9e2;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  transition: 0.2s ease;
+}
+
+.date-field input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52,152,219,0.25);
+}
+
+.date-apply {
+  height: 42px;
+  padding: 0 18px;
+  border: none;
+  background: #3498db;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  width: auto;
+}
+
+.date-apply:hover {
+  background: #2980b9;
+}
+
+/* ================================
+   TABLE WRAPPER
+================================ */
 .table-wrap {
   width: 100%;
   overflow-x: auto;
 }
 
-/* TABLE */
+/* ================================
+   TABLE STYLING
+================================ */
 .gw-table {
   width: 100%;
   border-collapse: collapse;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  border: 1px solid #e0e5eb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .gw-table thead {
@@ -97,7 +162,7 @@
 }
 
 .gw-table td {
-  padding: 13px 10px;
+  padding: 14px 10px;
   border-bottom: 1px solid #f1f1f1;
   color: #555;
   font-size: 14px;
@@ -112,24 +177,27 @@
   border-bottom: none;
 }
 
-/* ACTION BUTTONS */
+/* ================================
+   ACTION BUTTONS
+================================ */
 .actions-col {
   display: flex;
   gap: 8px;
 }
 
 .action {
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
   border: none;
   font-size: 14px;
   cursor: pointer;
+  font-weight: 600;
   transition: 0.2s ease;
 }
 
 .action.view {
   background: #3498db;
-  color: #fff;
+  color: white;
 }
 
 .action.view:hover {
@@ -138,7 +206,7 @@
 
 .action.delete {
   background: #e74c3c;
-  color: #fff;
+  color: white;
 }
 
 .action.delete:hover {
@@ -147,202 +215,71 @@
 
 .empty {
   text-align: center;
-  padding: 18px;
-  color: #888;
+  padding: 20px;
+  color: #9aa1a8;
+  font-size: 15px;
 }
 
-/* MODAL */
+/* ================================
+   MODAL
+================================ */
 .confirm-modal .modal-box,
 .generated-view .modal-box {
   background: #fff;
-  padding: 25px;
+  padding: 26px;
   width: 90%;
-  max-width: 540px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  max-width: 600px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
   animation: fadeIn 0.25s ease;
 }
 
-.confirm-modal .modal-actions button,
-.generated-view .modal-actions button {
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-/* Date Filter Layout */
-.gw-date-filters {
-  display: flex;
-  align-items: flex-end;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.date-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.date-field label {
-  font-size: 14px;
-  color: #2c3e50;
-  font-weight: 600;
-}
-
-.date-field input {
-  height: 42px;
-  padding: 0 14px;
-  border-radius: 8px;
-  border: 1px solid #dcdcdc;
-  font-size: 14px;
-  outline: none;
-  transition: 0.2s ease;
-  background: #fff;
-}
-
-.date-field input:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52,152,219,0.25);
-}
-
-/* Buttons */
-.date-apply {
-  height: 42px;
-  padding: 0 18px;
-  border: none;
-  background: #3498db;
-  color: white;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
-  width: auto;
-}
-
-.date-reset {
-  height: 42px;
-  padding: 0 18px;
-  border: none;
-  background: #bdc3c7;
-  color: #fff;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.date-apply:hover {
-  background: #2980b9;
-}
-
-.date-reset:hover {
-  background: #a2a8ad;
-}
-
+/* ================================
+   PAGINATION
+================================ */
 .pagination {
   margin-top: 18px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
 }
 
-.pagination button {
-  padding: 6px 12px;
+.pg-btn {
+  padding: 7px 12px;
+  background: #f1f5f9;
+  border: 1px solid #d0d7de;
   border-radius: 6px;
-  border: 1px solid #dcdcdc;
-  background: #ffffff;
   cursor: pointer;
-  transition: 0.2s;
+  font-size: 14px;
+  transition: 0.2s ease;
+  font-weight: 500;
 }
 
-.pagination button:hover {
-  background: #f0f0f0;
+.pg-btn:hover {
+  background: #e2e8f0;
 }
 
-.pagination .active {
+.pg-btn.active {
   background: #3498db;
-  color: #fff;
+  color: white;
   border-color: #3498db;
+  font-weight: 600;
 }
 
-.pagination button:disabled {
+.pg-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .gw-date-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .date-apply,
-  .date-reset {
-    width: 100%;
-  }
+.pg-ellipsis {
+  padding: 7px 8px;
+  color: #777;
+  font-size: 16px;
 }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .gw-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .gw-filters input,
-  .gw-filters select,
-  .filter-reset {
-    width: 100%;
-  }
-
-  .gw-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-}
-
-@media (max-width: 768px) {
-  .gw-table,
-  .gw-table thead,
-  .gw-table tbody,
-  .gw-table tr,
-  .gw-table td,
-  .gw-table th {
-    display: block;
-    width: 100%;
-  }
-
-  .gw-table thead {
-    display: none;
-  }
-
-  .gw-table tr {
-    background: #ffffff;
-    margin-bottom: 15px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #eaeaea;
-  }
-
-  .gw-table td {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-  }
-
-  .gw-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #333;
-  }
-}
-
+/* ================================
+   ANIMATION
+================================ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }

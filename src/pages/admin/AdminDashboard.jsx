@@ -15,6 +15,7 @@ import {
   Cell,
   Legend
 } from "recharts";
+import "../../styles/admin/admin-common.css";
 import "../../styles/admin/AdminDashboard.css";
 
 const API_BASE = "/api";

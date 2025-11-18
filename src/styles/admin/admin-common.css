@@ -1,0 +1,167 @@
+/* admin-common.css — shared admin base styles */
+
+:root{
+  --accent:#3498db;
+  --accent-dark:#1f78b4;
+  --danger:#e74c3c;
+  --muted:#7f8c8d;
+  --bg:#fff;
+  --input-height:42px;
+  --radius:8px;
+}
+
+/* Page layout */
+.admin-page,
+.admin-dashboard {
+  padding: 25px 30px;
+  max-width: 1300px;
+  margin: 0 auto;
+  animation: fadeIn 0.28s ease;
+  box-sizing: border-box;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.admin-page h2,
+.admin-dashboard h2 {
+  font-size: 26px;
+  margin-bottom: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* Generic card */
+.admin-card {
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(12,30,60,0.04);
+}
+
+/* Table base */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table,
+.user-table,
+.gw-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e6e9ee;
+  box-shadow: 0 3px 10px rgba(12,30,60,0.04);
+}
+
+.admin-table thead th,
+.user-table thead th,
+.gw-table thead th {
+  background: #f8fafc;
+  text-align: left;
+  padding: 12px 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #34495e;
+  border-bottom: 2px solid #e9edf2;
+}
+
+.admin-table td,
+.user-table td,
+.gw-table td {
+  padding: 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f3f6;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); }
+
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #c0392b; }
+
+/* Inputs & selects shared */
+.input,
+.select,
+.filters input,
+.filters select,
+.gw-filters input,
+.gw-filters select,
+.date-field input {
+  height: var(--input-height);
+  min-height: var(--input-height);
+  padding: 0 14px;
+  border: 1px solid #d8dbe0;
+  border-radius: var(--radius);
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow .15s ease, border-color .15s ease;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.select:focus,
+.filters input:focus,
+.filters select:focus,
+.gw-filters input:focus,
+.gw-filters select:focus,
+.date-field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(52,152,219,0.12);
+}
+
+/* Modals */
+.modal-overlay,
+.wm-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.52);
+  z-index: 9999;
+}
+
+.modal-box,
+.wm-modal,
+.confirm-modal-container {
+  width: 92%;
+  max-width: 540px;
+  background: #fff;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(2,6,23,0.12);
+}
+
+/* small helpers */
+.actions-col { display:flex; gap:8px; align-items:center; }
+.empty { text-align:center; padding:18px; color:#777; }
+
+/* animations */
+@keyframes fadeIn { from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)} }
+
+/* Responsive utilities */
+@media (max-width: 900px) {
+  .admin-page, .admin-dashboard { padding:18px; }
+  .admin-table, .user-table, .gw-table { font-size:13px; }
+}

@@ -41,7 +41,9 @@ export default function UserManagement() {
   // Fetch users
   const loadUsers = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/index.php?route=admin&action=getAllUsers`);
+      const res = await axios.get(
+        `${API_BASE}/index.php?route=admin&action=getAllUsers`
+      );
       if (res.data.success) {
         setUsers(res.data.users);
       }
@@ -86,20 +88,29 @@ export default function UserManagement() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <select value={filterVerification} onChange={(e) => setFilterVerification(e.target.value)}>
+        <select
+          value={filterVerification}
+          onChange={(e) => setFilterVerification(e.target.value)}
+        >
           <option value="all">All</option>
           <option value="verified">Verified</option>
           <option value="unverified">Unverified</option>
         </select>
 
-        <select value={filterGender} onChange={(e) => setFilterGender(e.target.value)}>
+        <select
+          value={filterGender}
+          onChange={(e) => setFilterGender(e.target.value)}
+        >
           <option value="all">Gender: All</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
           <option value="other">Other</option>
         </select>
 
-        <select value={filterFitness} onChange={(e) => setFilterFitness(e.target.value)}>
+        <select
+          value={filterFitness}
+          onChange={(e) => setFilterFitness(e.target.value)}
+        >
           <option value="all">Fitness Level: All</option>
           <option value="beginner">Beginner</option>
           <option value="intermediate">Intermediate</option>
@@ -134,12 +145,15 @@ export default function UserManagement() {
               filteredUsers.map((u) => (
                 <tr key={u.User_ID}>
                   <td>{u.User_ID}</td>
-                  <td>{u.FirstName} {u.LastName}</td>
+                  <td>
+                    {u.FirstName} {u.LastName}
+                  </td>
                   <td>{u.Email}</td>
                   <td>{u.Is_Verified ? "Verified" : "Not Verified"}</td>
                   <td>{u.Gender}</td>
                   <td>{u.Fitness_Level}</td>
                   <td>{u.Created_At}</td>
+
                   <td className="actions-col">
                     {u.Role !== "admin" ? (
                       <button className="delete-btn" onClick={() => confirmDelete(u)}>
@@ -163,7 +177,10 @@ export default function UserManagement() {
             <h3>Confirm Delete</h3>
             <p>
               Are you sure you want to delete{" "}
-              <strong>{selectedUser?.FirstName} {selectedUser?.LastName}</strong>?
+              <strong>
+                {selectedUser?.FirstName} {selectedUser?.LastName}
+              </strong>
+              ?
             </p>
 
             <div className="modal-actions">
