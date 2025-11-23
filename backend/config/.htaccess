@@ -1,0 +1,14 @@
+# Deny all direct access to this directory
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "\.(env|json|lock)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Allow only index.php to be accessed directly
+<FilesMatch "^(?!index\.php$).*\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

@@ -1,0 +1,51 @@
+.alert-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.alert-modal-box {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 520px;
+  width: 100%;
+  padding: 20px 22px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.alert-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: var(--text-dark, #222);
+}
+
+.alert-body {
+  margin-bottom: 18px;
+  color: var(--muted, #555);
+  line-height: 1.4;
+}
+
+.alert-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.alert-actions .btn {
+  min-width: 84px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #3498db; /* match Apply button */
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 18px rgba(52,152,219,0.22);
+  cursor: pointer;
+}
+
+.alert-actions .btn:hover {
+  background: #2980b9; /* match Apply hover */
+}

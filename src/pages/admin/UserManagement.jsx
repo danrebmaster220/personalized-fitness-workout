@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../styles/admin/UserManagement.css";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost/personalized-fitness-workout/backend/public";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -78,6 +78,7 @@ export default function UserManagement() {
   return (
     <div className="admin-page">
       <h2>User Management</h2>
+      <p className="subtitle">View, search, and manage all registered users</p>
 
       {/* Filters */}
       <div className="filters">

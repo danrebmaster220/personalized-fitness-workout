@@ -67,10 +67,20 @@
   background: #f8fafc;
   text-align: left;
   padding: 12px 12px;
-  font-weight: 600;
+  /* Strong, consistent header style for admin tables */
+  font-weight: 700;
   font-size: 14px;
   color: #34495e;
   border-bottom: 2px solid #e9edf2;
+    /* Ensure consistent table header typography across admin pages */
+    /* fallback/compat: keep previous values if still necessary */
+}
+
+/* Extra specificity for generated workouts and user management headers to override page-level rules */
+.admin-page .gw-table thead th,
+.admin-page .user-table thead th {
+  font-weight: 700;
+  color: #34495e;
 }
 
 .admin-table td,
@@ -91,6 +101,11 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto; /* ensure buttons don't expand to full width */
 }
 
 .btn-primary { background: var(--accent); color: #fff; }

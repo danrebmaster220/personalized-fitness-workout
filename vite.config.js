@@ -4,13 +4,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: {
-      "/api": {
-        target: "http://localhost/personalized-fitness-workout/backend/public",
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
+    host: 'localhost',
+    port: 5174,
+    strictPort: true,
+    // No proxy: frontend will call the real backend URL directly in production and development.
   },
 })

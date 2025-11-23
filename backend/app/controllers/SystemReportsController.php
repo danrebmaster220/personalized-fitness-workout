@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/SystemReportModel.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../core/Database.php';
 
 class SystemReportsController {
     private $db;

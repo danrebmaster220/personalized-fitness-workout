@@ -87,8 +87,16 @@ body {
   z-index: 2;
   max-width: 1100px;
   padding: 2rem;
-  animation: fadeInUp 1.2s ease;
 }
+
+/* Use scroll-driven animation utilities instead of an always-running keyframe.
+   Home.jsx adds the `animate-on-scroll` class and toggles `in-view` when
+   elements enter the viewport via IntersectionObserver. This preserves the
+   original responsive layout while enabling scroll animations only when
+   desired. */
+.hero-content.animate-on-scroll { opacity: 0; transform: translateY(18px); transition: opacity 700ms ease, transform 700ms ease; will-change: opacity, transform; }
+.hero-content.animate-on-scroll.in-view { opacity: 1; transform: translateY(0); }
+
 
 @keyframes fadeInUp {
   from {
@@ -112,6 +120,12 @@ body {
   text-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
 }
 
+/* Slightly reduce the very largest heading on narrower screens while
+   keeping the strong presence from the original design. */
+@media (max-width: 1200px) {
+  .hero h1 { font-size: 3.6rem; }
+}
+
 .hero h1 span {
   color: var(--accent-blue);
   display: block;
@@ -126,6 +140,11 @@ body {
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Improve readability on small screens */
+@media (max-width: 576px) {
+  .hero p { font-size: 1rem; padding: 0 1rem; }
 }
 
 /* Button */
@@ -152,6 +171,11 @@ body {
   transform: translateY(-3px);
   background: linear-gradient(90deg, #0052cc, #00b4ff);
   box-shadow: 0 15px 40px rgba(0, 102, 255, 0.6);
+}
+
+/* Slightly reduce button padding on small screens to avoid wrap */
+@media (max-width: 576px) {
+  .btn { padding: 0.9rem 1.6rem; font-size: 0.95rem; }
 }
 
 
@@ -233,6 +257,12 @@ body {
   min-height: 90vh; /* more prominence */
 }
 
+/* Make cta-section slightly shorter on small screens so content fits
+   without forcing excessive vertical scrolling */
+@media (max-width: 768px) {
+  .cta-section { min-height: 70vh; padding: 4.5rem 20px; }
+}
+
 .cta-section h3 {
   font-size: 2.4rem;
   margin-bottom: 2rem;
@@ -273,6 +303,13 @@ body {
   color: var(--navy-blue);
   font-weight: 900;
   text-transform: uppercase;
+}
+
+/* Improve contrast for logo used inline in About heading */
+.about-header h1 .app-logo {
+  color: #ffffff; /* ensure white on background */
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6), 0 0 18px rgba(52,152,219,0.45);
+  display: inline-block;
 }
 
 .about-header p {
@@ -413,6 +450,25 @@ body {
   .contact-container main {
     grid-template-columns: 1fr;
   }
+}
+
+/* Scroll animation utility */
+.animate-on-scroll { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease, transform 600ms ease; will-change: opacity, transform; }
+.animate-on-scroll.in-view { opacity: 1; transform: translateY(0); }
+
+/* Slight stagger helper when applied to children */
+.animate-stagger > * { opacity: 0; transform: translateY(18px); }
+.animate-stagger.in-view > * { opacity: 1; transform: translateY(0); transition: opacity 500ms ease, transform 500ms ease; }
+.animate-stagger.in-view > *:nth-child(1) { transition-delay: 0ms; }
+.animate-stagger.in-view > *:nth-child(2) { transition-delay: 80ms; }
+.animate-stagger.in-view > *:nth-child(3) { transition-delay: 160ms; }
+.animate-stagger.in-view > *:nth-child(4) { transition-delay: 240ms; }
+
+/* Respect system preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll,
+  .animate-stagger > *,
+  .hero::after { transition: none !important; animation: none !important; }
 }
 
 @media (max-width: 576px) {

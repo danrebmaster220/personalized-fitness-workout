@@ -2,3 +2,52 @@ body, html {
   height: 100%;
   overflow-y: auto !important;
 }
+
+:root {
+  --primary: #2276f3; /* main brand color */
+  --primary-dark: #1455b6;
+  --primary-soft: #eaf5ff;
+  --muted-1: #6b7b86;
+  --card-bg: #ffffff;
+}
+
+/* Global primary button style to keep the UI consistent */
+.btn-primary {
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(34,118,243,0.12);
+  background: linear-gradient(90deg, var(--primary-dark), #0f4aa0);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #d3dfe9;
+  padding: 9px 14px;
+  color: #23425a;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.btn-secondary:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+/* Ensure primary buttons have a consistent height and alignment */
+.btn-primary {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}

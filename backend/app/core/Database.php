@@ -1,10 +1,28 @@
 <?php
 class Database {
-    private $host = "localhost";
-    private $db_name = "fitness_db";
-    private $username = "root";
-    private $password = "";
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     public $conn;
+
+    public function __construct() {
+        // Load credentials from environment variables or config file
+        $envPath = __DIR__ . '/../../config/.env';
+        if (file_exists($envPath)) {
+            $env = parse_ini_file($envPath);
+            $this->host = $env['DB_HOST'] ?? 'localhost';
+            $this->db_name = $env['DB_NAME'] ?? 'fitness_db';
+            $this->username = $env['DB_USER'] ?? 'root';
+            $this->password = $env['DB_PASS'] ?? '';
+        } else {
+            // Fallback to default values (for local development only)
+            $this->host = "localhost";
+            $this->db_name = "fitness_db";
+            $this->username = "root";
+            $this->password = "";
+        }
+    }
 
     public function connect() {
         $this->conn = null;
@@ -23,9 +41,11 @@ class Database {
             // Make sure connection uses utf8mb4
             $this->conn->exec("SET NAMES utf8mb4");
         } catch (PDOException $e) {
+            // Don't expose database details in production
+            error_log("Database connection error: " . $e->getMessage());
             echo json_encode([
                 "success" => false,
-                "message" => "Database connection error: " . $e->getMessage()
+                "message" => "Database connection error. Please contact support."
             ]);
             exit;
         }

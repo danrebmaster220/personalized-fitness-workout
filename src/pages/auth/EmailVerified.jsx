@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import "../../styles/LoginRegister.css";
 
-const API_BASE = "http://localhost/personalized-fitness-workout/backend/public";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost/personalized-fitness-workout/backend/public";
 
 const EmailVerified = () => {
   const [params] = useSearchParams();

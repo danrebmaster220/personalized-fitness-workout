@@ -18,7 +18,7 @@ import {
 import "../../styles/admin/admin-common.css";
 import "../../styles/admin/AdminDashboard.css";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost/personalized-fitness-workout/backend/public";
 
 const COLORS = ["#3498db", "#27ae60", "#f1c40f", "#e74c3c", "#9b59b6"];
 
@@ -109,6 +109,7 @@ export default function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       <h2>Dashboard Overview</h2>
+      <p className="subtitle">Monitor system statistics and user activity</p>
 
       <div className="stats-grid">
         <div className="stat-card users">

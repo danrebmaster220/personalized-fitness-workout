@@ -28,5 +28,97 @@ class ApiLogModel {
             ":errorMessage" => $data["errorMessage"]
         ]);
     }
+
+    public function getLogs($filters = []) {
+        $page = $filters['page'] ?? 1;
+        $limit = $filters['limit'] ?? 10;
+        $offset = ($page - 1) * $limit;
+
+        // Build WHERE clause
+        $where = [];
+        $params = [];
+
+        if (!empty($filters['search'])) {
+            $where[] = "(al.API_Name LIKE :search OR al.API_Type LIKE :search OR u.Email LIKE :search)";
+            $params[':search'] = '%' . $filters['search'] . '%';
+        }
+
+        if (!empty($filters['method'])) {
+            $where[] = "al.API_Type = :method";
+            $params[':method'] = $filters['method'];
+        }
+
+        if (!empty($filters['status'])) {
+            $where[] = "al.Status_Code = :status";
+            $params[':status'] = $filters['status'];
+        }
+
+        if (!empty($filters['from'])) {
+            $where[] = "DATE(al.Request_Time) >= :from";
+            $params[':from'] = $filters['from'];
+        }
+
+        if (!empty($filters['to'])) {
+            $where[] = "DATE(al.Request_Time) <= :to";
+            $params[':to'] = $filters['to'];
+        }
+
+        $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+
+        // Count total records
+        $countSql = "SELECT COUNT(*) as total FROM api_logs al 
+                     LEFT JOIN users u ON al.User_ID = u.User_ID 
+                     $whereClause";
+        $countStmt = $this->db->prepare($countSql);
+        $countStmt->execute($params);
+        $total = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+        // Get paginated results
+        $sql = "SELECT al.Log_ID, al.API_Name as Endpoint, al.API_Type as Method, 
+                       al.Status_Code as Status, al.Request_Body, al.Response_Body,
+                       al.Error_Message, al.Request_Time as Created_At,
+                       u.Email as User_Email
+                FROM api_logs al
+                LEFT JOIN users u ON al.User_ID = u.User_ID
+                $whereClause
+                ORDER BY al.Request_Time DESC
+                LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return [
+            'logs' => $logs,
+            'total' => $total
+        ];
+    }
+
+    public function getLogById($id) {
+        $sql = "SELECT al.Log_ID, al.API_Name as Endpoint, al.API_Type as Method, 
+                       al.Status_Code as Status, al.Request_Body, al.Response_Body,
+                       al.Error_Message, al.Request_Time as Created_At,
+                       u.Email as User_Email
+                FROM api_logs al
+                LEFT JOIN users u ON al.User_ID = u.User_ID
+                WHERE al.Log_ID = :id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteLog($id) {
+        $sql = "DELETE FROM api_logs WHERE Log_ID = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
 }
 ?>

@@ -14,6 +14,9 @@
 
 /* LOGO */
 .admin-logo {
+  display:flex;
+  align-items:center;
+  gap:8px;
   font-size: 20px;
   font-weight: 700;
   text-align: left;
@@ -21,6 +24,9 @@
   color: #ffffff;
   letter-spacing: 0.3px;
 }
+
+.admin-logo .app-logo { font-size: 20px; text-shadow: 0 0 8px rgba(52,152,219,0.45); }
+.admin-logo .app-logo .accent { text-shadow: 0 0 12px rgba(52,152,219,0.65); }
 
 /* NAVIGATION LINKS */
 .admin-nav {
@@ -63,19 +69,172 @@
 .admin-logout {
   margin-top: auto;
   margin-bottom: 10px;
-  padding: 10px 14px;
-  background: #e63946;
+  height: 42px;
+  padding: 0 16px;
+  background: #e74c3c; /* match other admin red buttons */
   border: none;
   border-radius: 8px;
   color: white;
   font-size: 15px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
-  transition: 0.25s ease;
+  transition: 0.2s ease;
 }
 
 .admin-logout:hover {
-  background: #d62839;
+  background: #c0392b; /* darker red on hover to match other admin actions */
+}
+
+/* HAMBURGER MENU BUTTON (visible when sidebar closed) */
+.admin-hamburger-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 150;
+  width: 44px;
+  height: 44px;
+  background: #0b2239;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: background 0.3s ease;
+}
+
+.admin-hamburger-btn span {
+  width: 24px;
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+/* Hamburger animation - transform into X */
+.admin-hamburger-btn.open span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.admin-hamburger-btn.open span:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.admin-hamburger-btn.open span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+.admin-hamburger-btn:hover {
+  background: #3498db;
+}
+
+.admin-hamburger-btn:active {
+  transform: scale(0.95);
+}
+
+/* CLOSE BUTTON INSIDE SIDEBAR (top-right) */
+.admin-sidebar-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.3s ease;
+}
+
+.admin-sidebar-close-btn span {
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.admin-sidebar-close-btn span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.admin-sidebar-close-btn span:nth-child(2) {
+  transform: rotate(-45deg);
+}
+
+.admin-sidebar-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.admin-sidebar-close-btn:active {
+  transform: scale(0.9);
+}
+
+/* SIDEBAR OVERLAY (mobile) */
+.admin-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  display: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .admin-sidebar { 
+    width: 220px; 
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-hamburger-btn {
+    display: flex;
+  }
+
+  /* Hide hamburger when sidebar is open */
+  .admin-hamburger-btn.open {
+    display: none;
+  }
+
+  .admin-sidebar-close-btn {
+    display: flex;
+  }
+
+  .admin-sidebar-overlay {
+    display: block;
+  }
+
+  .admin-sidebar {
+    width: 260px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 101;
+  }
+  
+  .admin-sidebar.open { 
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+    width: 100%;
+  }
 }

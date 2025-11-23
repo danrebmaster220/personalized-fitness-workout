@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import GeneratedWorkoutView from "../../components/GeneratedWorkoutView"; // reuse admin detail modal (works fine)
-import "../../styles/WorkoutHistory.css";
+import "../../styles/admin/admin-common.css";
+import "../../styles/admin/AdminDashboard.css";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost/personalized-fitness-workout/backend/public";
 
 export default function WorkoutHistory() {
   const user = JSON.parse(localStorage.getItem("user")) || null;
@@ -86,64 +87,99 @@ export default function WorkoutHistory() {
     }
   };
 
-  const downloadJSON = (w) => {
-    const filename = `workout-${w.Generate_ID || w.id || "unknown"}.json`;
-    const content = JSON.stringify(w, null, 2);
-    const url = "data:text/json;charset=utf-8," + encodeURIComponent(content);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
+  const downloadJSON = async (w) => {
+    const workoutId = w.Generate_ID || w.id;
+    // Open download URL directly in new window - simpler and more reliable
+    window.open(`${API_BASE}/index.php?route=user&action=downloadWorkout&id=${workoutId}`, '_blank');
   };
 
   return (
-    <div className="history-page">
-      <div className="history-header">
-        <h2>Your Generated Workouts</h2>
-        <p className="subtitle">All plans you created — view, download or re-open</p>
-      </div>
+    <div className="admin-dashboard">
+      <h2>Your Generated Workouts</h2>
+      <p className="subtitle">View, download, and manage all your workout plans</p>
 
-      <div className="history-controls">
+      <div style={{marginBottom: '24px'}}>
         <input
-          className="h-search"
           type="text"
           placeholder="Search by goal, muscle, or note..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          style={{
+            width: '100%',
+            maxWidth: '500px',
+            padding: '12px 16px',
+            fontSize: '14px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            outline: 'none',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          }}
         />
       </div>
 
-      <div className="history-table-wrap">
-        <table className="history-table">
+      <div className="data-table-container" style={{
+        background: 'white',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+      }}>
+        <table className="data-table" style={{width: '100%', borderCollapse: 'collapse'}}>
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Goal</th>
-              <th>Target</th>
-              <th>Days</th>
-              <th>Duration</th>
-              <th>Created</th>
-              <th>Actions</th>
+            <tr style={{background: '#f9fafb', borderBottom: '1px solid #e5e7eb'}}>
+              <th style={{padding: '16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>ID</th>
+              <th style={{padding: '16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Goal</th>
+              <th style={{padding: '16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Target</th>
+              <th style={{padding: '16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Days</th>
+              <th style={{padding: '16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Duration</th>
+              <th style={{padding: '16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Created</th>
+              <th style={{padding: '16px', textAlign: 'center', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {loading ? (
-              <tr><td colSpan="7" className="loading-row">Loading…</td></tr>
+              <tr><td colSpan="7" style={{textAlign: 'center', padding: '40px', color: '#6b7280', fontSize: '14px'}}>Loading…</td></tr>
             ) : workouts.length === 0 ? (
-              <tr><td colSpan="7" className="empty">No generated workouts found.</td></tr>
+              <tr><td colSpan="7" style={{textAlign: 'center', padding: '40px', color: '#6b7280', fontSize: '14px'}}>No generated workouts found.</td></tr>
             ) : (
               workouts.map((w) => (
-                <tr key={w.Generate_ID ?? w.id}>
-                  <td>{w.Generate_ID ?? w.id}</td>
-                  <td>{w.Goal ?? "-"}</td>
-                  <td>{w.Target_Muscle ?? "-"}</td>
-                  <td>{w.Workout_Days ?? "-"}</td>
-                  <td>{w.Duration_Min ? `${w.Duration_Min} min` : (w.duration ? `${w.duration} min` : "-")}</td>
-                  <td>{w.Created_At ?? w.createdAt ?? "-"}</td>
-                  <td className="history-actions">
-                    <button className="btn-view" onClick={() => openView(w.Generate_ID ?? w.id)}>View</button>
-                    <button className="btn-download" onClick={() => downloadJSON(w)}>JSON</button>
+                <tr key={w.Generate_ID ?? w.id} style={{borderBottom: '1px solid #f3f4f6'}}>
+                  <td style={{padding: '16px', fontSize: '14px', color: '#374151'}}>{w.Generate_ID ?? w.id}</td>
+                  <td style={{padding: '16px', fontSize: '14px', color: '#374151', fontWeight: '500'}}>{w.Goal ?? "-"}</td>
+                  <td style={{padding: '16px', fontSize: '14px', color: '#6b7280'}}>{w.Target_Muscle ?? "-"}</td>
+                  <td style={{padding: '16px', fontSize: '14px', color: '#6b7280'}}>{w.Workout_Days ?? "-"}</td>
+                  <td style={{padding: '16px', fontSize: '14px', color: '#6b7280'}}>{w.Duration_Min ? `${w.Duration_Min} min` : (w.duration ? `${w.duration} min` : "-")}</td>
+                  <td style={{padding: '16px', fontSize: '13px', color: '#6b7280'}}>{w.Created_At ?? w.createdAt ?? "-"}</td>
+                  <td style={{padding: '16px'}}>
+                    <div style={{display: 'flex', gap: '8px', justifyContent: 'center'}}>
+                      <button 
+                        className="btn-small btn-primary" 
+                        onClick={() => openView(w.Generate_ID ?? w.id)}
+                        style={{
+                          padding: '8px 16px',
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          borderRadius: '6px'
+                        }}
+                      >
+                        View
+                      </button>
+                      <button 
+                        className="btn-small btn-secondary" 
+                        onClick={() => downloadJSON(w)}
+                        style={{
+                          padding: '8px 16px',
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          borderRadius: '6px',
+                          background: 'white',
+                          border: '1px solid #e5e7eb',
+                          color: '#374151'
+                        }}
+                      >
+                        Download
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -152,12 +188,80 @@ export default function WorkoutHistory() {
         </table>
       </div>
 
-      <div className="history-pagination">
-        <button className="pg-btn" onClick={() => setPage(1)} disabled={page === 1}>« First</button>
-        <button className="pg-btn" onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}>‹ Prev</button>
-        <span className="pg-info">Page {page} of {totalPages}</span>
-        <button className="pg-btn" onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages}>Next ›</button>
-        <button className="pg-btn" onClick={() => setPage(totalPages)} disabled={page === totalPages}>Last »</button>
+      <div className="pagination" style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '8px',
+        marginTop: '24px'
+      }}>
+        <button 
+          className="pg-btn" 
+          onClick={() => setPage(1)} 
+          disabled={page === 1}
+          style={{
+            padding: '8px 12px',
+            fontSize: '13px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '6px',
+            background: 'white',
+            cursor: page === 1 ? 'not-allowed' : 'pointer',
+            opacity: page === 1 ? 0.5 : 1
+          }}
+        >
+          « First
+        </button>
+        <button 
+          className="pg-btn" 
+          onClick={() => setPage(Math.max(1, page - 1))} 
+          disabled={page === 1}
+          style={{
+            padding: '8px 12px',
+            fontSize: '13px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '6px',
+            background: 'white',
+            cursor: page === 1 ? 'not-allowed' : 'pointer',
+            opacity: page === 1 ? 0.5 : 1
+          }}
+        >
+          ‹ Prev
+        </button>
+        <span className="pg-info" style={{padding: '0 16px', fontSize: '14px', color: '#374151'}}>
+          Page {page} of {totalPages}
+        </span>
+        <button 
+          className="pg-btn" 
+          onClick={() => setPage(Math.min(totalPages, page + 1))} 
+          disabled={page === totalPages}
+          style={{
+            padding: '8px 12px',
+            fontSize: '13px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '6px',
+            background: 'white',
+            cursor: page === totalPages ? 'not-allowed' : 'pointer',
+            opacity: page === totalPages ? 0.5 : 1
+          }}
+        >
+          Next ›
+        </button>
+        <button 
+          className="pg-btn" 
+          onClick={() => setPage(totalPages)} 
+          disabled={page === totalPages}
+          style={{
+            padding: '8px 12px',
+            fontSize: '13px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '6px',
+            background: 'white',
+            cursor: page === totalPages ? 'not-allowed' : 'pointer',
+            opacity: page === totalPages ? 0.5 : 1
+          }}
+        >
+          Last »
+        </button>
       </div>
 
       {viewOpen && selected && (

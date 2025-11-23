@@ -1,13 +1,15 @@
 import React from "react";
 import "../styles/Footer.css";
+import { useSettings } from '../contexts/SettingsContext';
 
 const Footer = () => {
+  const { settings } = useSettings();
   return (
     <footer className="footer">
       <div className="footer-container">
-        {/* Logo */}
+        {/* Logo / App Name */}
         <div className="footer-logo">
-          FitNes<span className="footer-logo-accent">+</span>
+          {settings?.app_name || 'FitNes'}<span className="footer-logo-accent">+</span>
         </div>
 
         {/* Footer Navigation */}
@@ -28,7 +30,8 @@ const Footer = () => {
 
       {/* Bottom section */}
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} FitNes+. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} {settings?.app_name || 'FitNes+'}. All rights reserved.</p>
+        {settings?.support_email && <p>Support: <a href={`mailto:${settings.support_email}`}>{settings.support_email}</a></p>}
       </div>
     </footer>
   );

@@ -11,7 +11,7 @@ class WorkoutModel {
     public function saveGeneratedWorkout($data) {
         $sql = "INSERT INTO generated_workout (
                     User_ID, Goal, Target_Muscle, Workout_Place, Workout_Days,
-                    Session_Minutes, Equipment, Health_Condition, Allergies,
+                    Duration_Min, Equipment, Health_Condition, Allergies,
                     BMI, BMR, TDEE,
                     Workout_Result, Meal_Result, Body_Condition_Result,
                     Created_At

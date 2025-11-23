@@ -3,9 +3,16 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
+import axios from 'axios';
+import { SettingsProvider } from './contexts/SettingsContext';
+
+// send cookies by default for backend requests
+axios.defaults.withCredentials = true;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <SettingsProvider>
       <App />
+    </SettingsProvider>
   </React.StrictMode>
 );

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/WorkoutModal.css";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost/personalized-fitness-workout/backend/public";
 
 export default function WorkoutModal({ open, onClose, user, onGenerated }) {
   const [form, setForm] = useState({
@@ -12,12 +12,13 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
     weight: user?.Weight || "",
     height: user?.Height || "",
     fitnessGoal: "build-muscle",
-    targetMuscle: "",
+    targetMuscle: "full-body",
     workoutPlace: "home",
     workoutDays: 3,
     duration: 30,
     equipment: [],
     diet: "no-preference",
+    bodyCondition: "none",
   });
 
   const [bmi, setBMI] = useState(null);
@@ -26,6 +27,8 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
 
   // Auto-calc metrics
   useEffect(() => {
@@ -77,6 +80,8 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
         workoutDays: Number(form.workoutDays),
         duration: Number(form.duration),
         equipment: form.equipment.join(", "),
+        equipment_array: form.equipment,
+        bodyCondition: form.bodyCondition || "none",
         weight: form.weight,
         height: form.height,
         age: form.age,
@@ -102,6 +107,24 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
     setLoading(false);
   };
 
+  const handleResendVerification = async () => {
+    if (!user?.User_ID) return setResendMessage("No user available");
+    setResendMessage("");
+    setResendLoading(true);
+    try {
+      const resp = await axios.get(`${API_BASE}/index.php?route=user&action=resendVerification&userId=${user.User_ID}`);
+      if (resp.data?.success) {
+        setResendMessage('Verification email sent. Please check your inbox.');
+      } else {
+        setResendMessage(resp.data?.message || 'Failed to send verification email.');
+      }
+    } catch (err) {
+      console.error(err);
+      setResendMessage('Server error while sending verification email.');
+    }
+    setResendLoading(false);
+  };
+
   if (!open) return null;
 
   return (
@@ -113,6 +136,20 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
             ✕
           </button>
         </div>
+        {/* If the user is not verified, show an inline banner with option to resend verification */}
+        {!user?.Is_Verified && (
+          <div className="wm-unverified">
+            <div className="wm-unverified-text">
+              Your email is not verified. You can still generate a workout, but some features may be limited.
+            </div>
+            <div className="wm-unverified-actions">
+              <button className="btn-secondary" type="button" onClick={handleResendVerification} disabled={resendLoading}>
+                {resendLoading ? 'Sending...' : 'Resend verification email'}
+              </button>
+              {resendMessage && <div className="wm-resend-msg">{resendMessage}</div>}
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="wm-form">
           <h3 className="section-title">Personal Information</h3>
@@ -175,11 +212,23 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
 
             <label className="wm-field">
               <span>Target Muscle</span>
-              <input
-                name="targetMuscle"
-                value={form.targetMuscle}
-                onChange={handleChange}
-              />
+              <select name="targetMuscle" value={form.targetMuscle} onChange={handleChange}>
+                <option value="full-body">Full Body</option>
+                <option value="upper-body">Upper Body</option>
+                <option value="lower-body">Lower Body</option>
+                <option value="chest">Chest</option>
+                <option value="back">Back</option>
+                <option value="shoulders">Shoulders</option>
+                <option value="biceps">Biceps</option>
+                <option value="triceps">Triceps</option>
+                <option value="quadriceps">Quadriceps</option>
+                <option value="hamstrings">Hamstrings</option>
+                <option value="glutes">Glutes</option>
+                <option value="calves">Calves</option>
+                <option value="core">Core / Abs</option>
+                <option value="cardio">Cardio / Endurance</option>
+                <option value="mobility">Mobility / Flexibility</option>
+              </select>
             </label>
 
             <label className="wm-field">
@@ -208,15 +257,19 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
               <input
                 name="duration"
                 value={form.duration}
+                placeholder="e.g. 30 (minutes per session)"
                 onChange={handleChange}
               />
+              <div className="wm-help">Minutes per session = the average minutes you plan to exercise each workout (e.g., if you train 3 days/week and set 30, you'll do ~3×30 minutes/week).</div>
             </label>
           </div>
 
           <h3 className="section-title">Available Equipment</h3>
-
+          <div className="wm-help" style={{ marginBottom: 8 }}>
+            Check what equipment you actually have available — this helps the generator tailor exercises to your gear.
+          </div>
           <div className="equipment-grid">
-            {["Dumbbells", "Barbell", "Resistance Bands", "Kettlebell", "Bench"].map(
+            {["Dumbbells", "Barbell", "Resistance Bands", "Kettlebell", "Bench", "Pull-up Bar", "Cable Machine", "Stationary Bike", "Treadmill", "None"].map(
               (eq) => (
                 <label key={eq} className="equip-item">
                   <input
@@ -232,7 +285,7 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
             )}
           </div>
 
-          <h3 className="section-title">Diet Preference</h3>
+          <h3 className="section-title">Diet Preference / Meal Focus</h3>
 
           <label className="wm-field">
             <select name="diet" value={form.diet} onChange={handleChange}>
@@ -241,6 +294,25 @@ export default function WorkoutModal({ open, onClose, user, onGenerated }) {
               <option value="low-carb">Low Carb</option>
               <option value="vegan">Vegan</option>
               <option value="keto">Keto</option>
+              <option value="mediterranean">Mediterranean</option>
+              <option value="pescatarian">Pescatarian</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="intermittent-fasting">Intermittent Fasting</option>
+              <option value="gluten-free">Gluten Free</option>
+            </select>
+          </label>
+
+          <h3 className="section-title">Health / Body Condition</h3>
+          <label className="wm-field">
+            <select name="bodyCondition" value={form.bodyCondition} onChange={handleChange}>
+              <option value="none">None</option>
+              <option value="asthma">Asthma</option>
+              <option value="knee-injury">Knee injury / joint issues</option>
+              <option value="back-pain">Back pain</option>
+              <option value="high-blood-pressure">High blood pressure</option>
+              <option value="diabetes">Diabetes</option>
+              <option value="pregnancy">Pregnancy</option>
+              <option value="other">Other / prefer to specify in notes</option>
             </select>
           </label>
 

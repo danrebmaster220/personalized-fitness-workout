@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2025 at 09:42 PM
+-- Generation Time: Nov 22, 2025 at 10:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,6 +40,11 @@ CREATE TABLE `api_logs` (
   `Request_Time` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `api_logs`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -67,6 +72,55 @@ CREATE TABLE `generated_workout` (
   `Created_At` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `generated_workout`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `k` varchar(191) NOT NULL,
+  `v` text DEFAULT NULL,
+  `type` varchar(50) NOT NULL DEFAULT 'string',
+  `is_secret` tinyint(1) NOT NULL DEFAULT 0,
+  `description` varchar(255) DEFAULT NULL,
+  `autoload` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings_history`
+--
+
+CREATE TABLE `settings_history` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `setting_id` int(10) UNSIGNED NOT NULL,
+  `changed_by` int(10) UNSIGNED DEFAULT NULL,
+  `old_value` text DEFAULT NULL,
+  `new_value` text DEFAULT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `settings_history`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -78,7 +132,7 @@ CREATE TABLE `user` (
   `FirstName` varchar(50) NOT NULL,
   `LastName` varchar(50) NOT NULL,
   `Email` varchar(255) NOT NULL,
-  `Password` varchar(255) NOT NULL,
+  `Password` varchar(255) DEFAULT NULL,
   `Role` enum('user','admin') DEFAULT 'user',
   `Age` int(11) DEFAULT NULL,
   `Height` decimal(5,2) DEFAULT NULL,
@@ -92,16 +146,15 @@ CREATE TABLE `user` (
   `Reset_Expires` datetime DEFAULT NULL,
   `Created_At` datetime DEFAULT current_timestamp(),
   `Updated_At` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `Activity_Level` varchar(20) NOT NULL DEFAULT 'moderate'
+  `Activity_Level` varchar(20) NOT NULL DEFAULT 'moderate',
+  `Google_ID` varchar(255) DEFAULT NULL,
+  `Login_Method` enum('email','google') NOT NULL DEFAULT 'email'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`User_ID`, `FirstName`, `LastName`, `Email`, `Password`, `Role`, `Age`, `Height`, `Weight`, `Gender`, `Fitness_Level`, `Profile_Image`, `Is_Verified`, `Verification_Token`, `Reset_Token`, `Reset_Expires`, `Created_At`, `Updated_At`, `Activity_Level`) VALUES
-(1, 'alshaik', 'hassan', 'alshaik7813@gmail.com', '$2y$10$3o5lSZO59xtyhWiH3Kfj.uNQOMgpHmhuahFj1Xif/0WcNzWkXIbVK', 'user', 22, 168.00, 58.00, 'male', 'beginner', NULL, 0, '62d26d566c4db6bb24d4d3c45c701800', NULL, NULL, '2025-11-10 16:22:04', '2025-11-10 16:22:04', 'moderate'),
-(2, 'alshaik', 'hassan', 'alshaik78@gmail.com', '$2y$10$k2bJUalnu2FwgddDGqbKk.lER6dbmzeTgdsrjSUMl8lu7cOwSX.bu', 'user', 22, 168.00, 69.00, 'male', 'beginner', NULL, 0, 'e9a4677174c8ebdc7ada3c2ba0205ed0', NULL, NULL, '2025-11-12 04:22:17', '2025-11-12 04:22:17', 'moderate');
 
 --
 -- Indexes for dumped tables
@@ -122,11 +175,27 @@ ALTER TABLE `generated_workout`
   ADD KEY `User_ID` (`User_ID`);
 
 --
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `k` (`k`),
+  ADD KEY `k_2` (`k`);
+
+--
+-- Indexes for table `settings_history`
+--
+ALTER TABLE `settings_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `setting_id` (`setting_id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`User_ID`),
-  ADD UNIQUE KEY `Email` (`Email`);
+  ADD UNIQUE KEY `Email` (`Email`),
+  ADD UNIQUE KEY `idx_google_id` (`Google_ID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -136,19 +205,31 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `api_logs`
 --
 ALTER TABLE `api_logs`
-  MODIFY `Log_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Log_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `generated_workout`
 --
 ALTER TABLE `generated_workout`
-  MODIFY `Generate_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Generate_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `settings_history`
+--
+ALTER TABLE `settings_history`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -165,6 +246,12 @@ ALTER TABLE `api_logs`
 --
 ALTER TABLE `generated_workout`
   ADD CONSTRAINT `generated_workout_ibfk_1` FOREIGN KEY (`User_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `settings_history`
+--
+ALTER TABLE `settings_history`
+  ADD CONSTRAINT `fk_settings_history_setting` FOREIGN KEY (`setting_id`) REFERENCES `settings` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

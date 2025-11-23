@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/WorkoutModel.php';
 require_once __DIR__ . '/../services/AIService.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../core/Database.php';
 
 class WorkoutController {
     private $db;
@@ -23,6 +23,17 @@ class WorkoutController {
             return ["success" => false, "message" => "User ID required"];
         }
 
+        // Enforce that the session user matches the supplied userId to prevent
+        // generating workouts on behalf of another user.
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $sessionUid = $_SESSION['user_id'] ?? null;
+        if (!$sessionUid) {
+            return ["success" => false, "message" => "Not authenticated"];
+        }
+        if ($sessionUid != $data['userId']) {
+            return ["success" => false, "message" => "Not authorized to generate for this user"];
+        }
+
         // Calculate metrics
         $bmi  = $this->calcBMI($data['weight'], $data['height']);
         $bmr  = $this->calcBMR($data['weight'], $data['height'], $data['age'], $data['gender']);
@@ -32,11 +43,15 @@ class WorkoutController {
         $prompt = $this->buildPrompt($data, $bmi, $bmr, $tdee);
 
         // CALL AI SERVICE (Gemini → fallback → OpenAI)
-        $ai = $this->aiService->generateWorkout($prompt);
+        $ai = $this->aiService->generateWorkout($prompt, $data['userId']);
 
         if (!$ai) {
+            error_log("WorkoutController: AI returned null/invalid. Prompt length: " . strlen($prompt));
+            error_log("WorkoutController: AI response structure: " . json_encode($ai));
             return ["success" => false, "message" => "AI returned invalid response. Try again."];
         }
+
+        error_log("WorkoutController: AI generation SUCCESS");
 
         // Save to DB
         $insertId = $this->model->saveGeneratedWorkout([
@@ -61,7 +76,14 @@ class WorkoutController {
             "success" => true,
             "message" => "Workout generated!",
             "id"      => $insertId,
-            "result"  => $ai
+            // include the ai payload plus helpful metadata for the frontend
+            "result"  => array_merge($ai, [
+                'id' => $insertId,
+                'bmi' => $bmi,
+                'bmr' => $bmr,
+                'tdee' => $tdee,
+                'createdAt' => date("c")
+            ])
         ];
     }
 
@@ -129,20 +151,47 @@ class WorkoutController {
             "workoutDays" => (int)$data['workoutDays'],
             "sessionMinutes" => (int)$data['duration'],
             "equipment" => $data['equipment'],
-            "diet" => $data['diet'] ?? "no preference"
+            "diet" => $data['diet'] ?? "no preference",
+            "bodyCondition" => $data['bodyCondition'] ?? "none"
         ];
 
-        return "You are a fitness coach. Return ONLY valid JSON.
+        return "You are an expert fitness coach and nutritionist. Generate a personalized workout and meal plan based on the user's data.
 
-Schema:
+IMPORTANT: Respond with ONLY valid JSON. No markdown, no explanations, just the JSON object.
+
+Required JSON structure:
 {
-  \"workout\": {},
-  \"meal\": {},
-  \"bodyCondition\": {}
+  \"workout\": {
+    \"weeklyPlan\": [
+      {
+        \"day\": \"Day 1\",
+        \"focus\": \"Upper Body\",
+        \"exercises\": [
+          {\"name\": \"Push-ups\", \"sets\": 3, \"reps\": \"10-12\", \"rest\": \"60s\"}
+        ]
+      }
+    ],
+    \"notes\": \"Workout guidelines and tips\"
+  },
+  \"meal\": {
+    \"dailyCalories\": " . $tdee . ",
+    \"macros\": {\"protein\": \"150g\", \"carbs\": \"200g\", \"fats\": \"60g\"},
+    \"meals\": [
+      {\"meal\": \"Breakfast\", \"foods\": [\"Oatmeal\", \"Eggs\"], \"calories\": 400}
+    ]
+  },
+  \"bodyCondition\": {
+    \"bmi\": " . $bmi . ",
+    \"category\": \"normal/underweight/overweight/obese\",
+    \"assessment\": \"Health assessment text\",
+    \"recommendations\": [\"Recommendation 1\", \"Recommendation 2\"]
+  }
 }
 
-Input:
-" . json_encode($payload, JSON_PRETTY_PRINT);
+User Data:
+" . json_encode($payload, JSON_PRETTY_PRINT) . "
+
+Generate the complete JSON response now:";
     }
 
     private function calcBMI($w, $h) {

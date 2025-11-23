@@ -84,7 +84,7 @@
 .user-table th {
   text-align: left;
   padding: 14px 10px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 15px;
   color: #34495e;
   border-bottom: 2px solid #e5e5e5;
@@ -128,7 +128,7 @@
 .no-action {
   display: flex;
   justify-content: center;
-  color: #9aa1a8;
+  /* width: auto; */ /* Ensure no width property */
   font-size: 14px;
 }
 

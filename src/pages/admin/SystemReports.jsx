@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../../styles/admin/SystemReports.css";
+import "../../styles/admin/admin-common.css";
+import "../../styles/admin/AdminDashboard.css";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost/personalized-fitness-workout/backend/public";
 
 export default function SystemReports() {
   const [loading, setLoading] = useState(true);
@@ -82,89 +83,156 @@ export default function SystemReports() {
   }, []);
 
   if (loading || !summary) {
-    return <div className="sys-loading">Loading reports...</div>;
+    return (
+      <div className="admin-dashboard">
+        <h2>System Reports</h2>
+        <div style={{textAlign: 'center', padding: '40px', color: '#6b7280', fontSize: '14px'}}>
+          Loading reports...
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="system-page">
+    <div className="admin-dashboard">
       <h2>System Reports</h2>
-      <p className="subtitle">Analytics and performance overview</p>
+      <p className="subtitle">Comprehensive analytics and performance metrics</p>
 
-      {/* SUMMARY CARDS */}
-      <div className="sys-cards">
-        <div className="sys-card blue">
+      {/* SUMMARY CARDS - Stats Grid */}
+      <div className="stats-grid">
+        <div className="stat-card users">
           <h3>{summary.totalUsers}</h3>
           <p>Total Users</p>
         </div>
 
-        <div className="sys-card green">
+        <div className="stat-card workouts">
           <h3>{summary.totalWorkouts}</h3>
           <p>Generated Workouts</p>
         </div>
 
-        <div className="sys-card purple">
+        <div className="stat-card verified">
           <h3>{summary.totalApiLogs}</h3>
           <p>Total API Logs</p>
         </div>
 
-        <div className="sys-card orange">
+        <div className="stat-card logs">
           <h3>{apiStats.error}</h3>
           <p>API Errors</p>
         </div>
       </div>
 
       {/* CHARTS SECTION */}
-      <div className="chart-grid">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gap: '24px',
+        marginTop: '24px'
+      }}>
 
         {/* User Growth Table */}
-        <div className="chart-box">
-          <h3>User Growth (12 months)</h3>
-          <table className="chart-table">
-            <thead>
-              <tr>
-                <th>Month</th>
-                <th>Registered</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userGrowth.map((u) => (
-                <tr key={u.month}>
-                  <td>{u.month}</td>
-                  <td>{u.count}</td>
+        <div style={{
+          background: 'white',
+          borderRadius: '8px',
+          padding: '24px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <h3 style={{fontSize: '18px', fontWeight: '600', marginBottom: '20px', color: '#1f2937'}}>
+            User Growth (12 months)
+          </h3>
+          <div style={{overflowX: 'auto'}}>
+            <table style={{width: '100%', borderCollapse: 'collapse'}}>
+              <thead>
+                <tr style={{borderBottom: '2px solid #e5e7eb'}}>
+                  <th style={{padding: '12px 16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Month</th>
+                  <th style={{padding: '12px 16px', textAlign: 'right', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Registered</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {userGrowth.map((u) => (
+                  <tr key={u.month} style={{borderBottom: '1px solid #f3f4f6'}}>
+                    <td style={{padding: '12px 16px', fontSize: '14px', color: '#374151'}}>{u.month}</td>
+                    <td style={{padding: '12px 16px', textAlign: 'right', fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>{u.count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Workout Growth Table */}
-        <div className="chart-box">
-          <h3>Generated Workouts (12 months)</h3>
-          <table className="chart-table">
-            <thead>
-              <tr>
-                <th>Month</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {workoutGrowth.map((w) => (
-                <tr key={w.month}>
-                  <td>{w.month}</td>
-                  <td>{w.count}</td>
+        <div style={{
+          background: 'white',
+          borderRadius: '8px',
+          padding: '24px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <h3 style={{fontSize: '18px', fontWeight: '600', marginBottom: '20px', color: '#1f2937'}}>
+            Generated Workouts (12 months)
+          </h3>
+          <div style={{overflowX: 'auto'}}>
+            <table style={{width: '100%', borderCollapse: 'collapse'}}>
+              <thead>
+                <tr style={{borderBottom: '2px solid #e5e7eb'}}>
+                  <th style={{padding: '12px 16px', textAlign: 'left', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Month</th>
+                  <th style={{padding: '12px 16px', textAlign: 'right', fontWeight: '600', fontSize: '13px', color: '#374151'}}>Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {workoutGrowth.map((w) => (
+                  <tr key={w.month} style={{borderBottom: '1px solid #f3f4f6'}}>
+                    <td style={{padding: '12px 16px', fontSize: '14px', color: '#374151'}}>{w.month}</td>
+                    <td style={{padding: '12px 16px', textAlign: 'right', fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>{w.count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* API Stats */}
-        <div className="chart-box">
-          <h3>API Performance Summary</h3>
-          <div className="api-stats">
-            <div>Total Requests: <strong>{apiStats.total}</strong></div>
-            <div>Success: <strong className="green-text">{apiStats.success}</strong></div>
-            <div>Errors: <strong className="red-text">{apiStats.error}</strong></div>
+        <div style={{
+          background: 'white',
+          borderRadius: '8px',
+          padding: '24px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <h3 style={{fontSize: '18px', fontWeight: '600', marginBottom: '20px', color: '#1f2937'}}>
+            API Performance Summary
+          </h3>
+          <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '12px 16px',
+              background: '#f9fafb',
+              borderRadius: '6px'
+            }}>
+              <span style={{fontSize: '14px', color: '#6b7280'}}>Total Requests:</span>
+              <strong style={{fontSize: '16px', color: '#1f2937'}}>{apiStats.total}</strong>
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '12px 16px',
+              background: '#d1fae5',
+              borderRadius: '6px'
+            }}>
+              <span style={{fontSize: '14px', color: '#065f46'}}>Success:</span>
+              <strong style={{fontSize: '16px', color: '#065f46'}}>{apiStats.success}</strong>
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '12px 16px',
+              background: '#fee2e2',
+              borderRadius: '6px'
+            }}>
+              <span style={{fontSize: '14px', color: '#991b1b'}}>Errors:</span>
+              <strong style={{fontSize: '16px', color: '#991b1b'}}>{apiStats.error}</strong>
+            </div>
           </div>
         </div>
 

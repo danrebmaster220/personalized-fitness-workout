@@ -42,11 +42,14 @@ class AdminController {
     public function getDashboardStats() {
         $stats = [];
 
-        // Total Users
-        $stats['totalUsers'] = $this->db->query("SELECT COUNT(*) FROM user WHERE Role='user'")->fetchColumn();
+        // Admins (count) - used to ensure admin accounts are not included in total users
+        $stats['totalAdmins'] = $this->db->query("SELECT COUNT(*) FROM user WHERE Role='admin'")->fetchColumn();
 
-        // Verified Users
-        $stats['verifiedUsers'] = $this->db->query("SELECT COUNT(*) FROM user WHERE Role='user' AND Is_Verified = 1")->fetchColumn();
+        // Total Users (exclude admin accounts)
+        $stats['totalUsers'] = $this->db->query("SELECT COUNT(*) FROM user WHERE COALESCE(Role, '') != 'admin'")->fetchColumn();
+
+        // Verified Users (exclude admin accounts)
+        $stats['verifiedUsers'] = $this->db->query("SELECT COUNT(*) FROM user WHERE COALESCE(Role, '') != 'admin' AND Is_Verified = 1")->fetchColumn();
 
         // Unverified users (computed)
         $stats['unverifiedUsers'] = $stats['totalUsers'] - $stats['verifiedUsers'];
@@ -85,7 +88,8 @@ class AdminController {
 
     // Verification breakdown
     public function getVerificationBreakdown() {
-        $sql = "SELECT Is_Verified AS verified, COUNT(*) AS count FROM user GROUP BY Is_Verified";
+        // Exclude admin accounts from the verification breakdown so dashboard reflects regular users only
+        $sql = "SELECT Is_Verified AS verified, COUNT(*) AS count FROM user WHERE COALESCE(Role, '') != 'admin' GROUP BY Is_Verified";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -158,7 +162,7 @@ class AdminController {
 
         $result = $model->getGeneratedWorkouts($filters);
 
-        echo json_encode([
+        return [
             "success" => true,
             "workouts" => $result["workouts"],
             "pagination" => [
@@ -167,7 +171,7 @@ class AdminController {
                 "total" => $result["total"],
                 "totalPages" => $result["totalPages"]
             ]
-        ]);
+        ];
     }
 
 

@@ -1,0 +1,52 @@
+.logout-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 18, 32, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100001; /* sit above other admin overlays */
+  pointer-events: auto;
+}
+
+.logout-modal {
+  background: #fff;
+  padding: 20px 22px;
+  border-radius: 8px;
+  width: 320px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.2);
+  color: #0b1220;
+}
+
+.logout-modal h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.logout-modal p {
+  margin: 0 0 16px 0;
+  color: #425066;
+  font-size: 14px;
+}
+
+.logout-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+/* Use global .btn, .btn-primary and .btn-danger from admin-common.css for consistent styles */
+
+/* Cancel button (gray) used in logout confirm */
+.btn-cancel {
+  background: #e6eef6; /* very light gray-blue to fit theme */
+  color: #34495e;
+  border-radius: 8px;
+  height: 42px;
+  padding: 0 14px;
+  border: none;
+  transition: 0.15s ease;
+}
+
+.btn-cancel:hover {
+  background: #d6dfe6; /* slightly darker on hover */
+}

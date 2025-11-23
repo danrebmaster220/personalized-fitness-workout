@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 // Auth Page
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import VerifyEmail from "./pages/auth/VerifyEmail";
 
 // User Pages
 import Dashboard from "./pages/user/Dashboard";
@@ -41,6 +42,7 @@ export default function App() {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
         </Route>
 
         {/* User Interface */}

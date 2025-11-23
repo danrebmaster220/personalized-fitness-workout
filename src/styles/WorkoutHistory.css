@@ -95,10 +95,13 @@
 }
 
 .btn-view {
-  background: #3498db;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
   color: #fff;
+  font-weight: 600;
 }
-.btn-view:hover { background: #2b83c7; }
+.btn-view:hover { background: var(--primary-dark); color: #fff; }
 
 .btn-download {
   background: #f1f5f9;

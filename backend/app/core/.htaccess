@@ -1,0 +1,11 @@
+# Deny all direct access to this directory
+<FilesMatch ".*">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Protect sensitive files
+<FilesMatch "\.(php|sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

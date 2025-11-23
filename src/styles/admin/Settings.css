@@ -1,0 +1,86 @@
+.admin-settings {
+  max-width: 980px;
+  margin: 24px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(2,6,23,0.05);
+  color: #0b1220;
+}
+
+.admin-settings h2 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+}
+
+.admin-msg {
+  background: #fff7e6;
+  border: 1px solid #ffe6a7;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 12px 20px;
+}
+
+.setting-row {
+  display: contents;
+}
+
+.setting-key {
+  padding: 10px 0;
+  font-weight: 600;
+  color: #0b1220;
+}
+
+.setting-input {
+  padding: 6px 0 12px 0;
+}
+
+.setting-input input,
+.setting-input textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e6edf3;
+  background: #fcfdff;
+  color: #0b1220;
+  font-size: 14px;
+}
+
+.setting-desc {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #667085;
+}
+
+.admin-loading {
+  padding: 24px;
+  text-align: center;
+  color: #334155;
+}
+
+
+.settings-save {
+  height: 42px;
+  padding: 0 18px;
+  border: none;
+  background: #3498db;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.settings-save:hover {
+  background: #2980b9;
+}
+
+@media (max-width: 900px) {
+  .settings-grid { grid-template-columns: 1fr; }
+}

@@ -1,3 +1,313 @@
+/* Cleaned ApiLogs styles - single source of truth */
+
+.api-page {
+  padding: 25px 30px;
+  animation: fadeIn 0.3s ease;
+}
+
+.api-page h2 {
+  font-size: 26px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+/* FILTERS */
+.api-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.api-filters > input[type="text"] {
+  height: 42px;
+  padding: 0 14px;
+  flex: 1 1 60%;
+  min-width: 220px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s ease;
+  background: #fff;
+  font-size: 14px;
+}
+
+.api-filters > select {
+  height: 42px;
+  padding: 0 12px;
+  flex: 0 0 160px;
+  min-width: 120px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.api-filters > select:focus,
+.api-filters > input[type="text"]:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52,152,219,0.12);
+}
+
+.api-filters .date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 150px;
+  min-width: 120px;
+}
+
+.api-filters .date-field input {
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.api-filters .date-field label { font-size: 13px; color: #1d2a38; margin-bottom: 4px; font-weight: 600; }
+
+/* push date inputs and actions to the right */
+.api-filters .date-field:first-of-type { margin-left: auto; }
+
+.filter-btn, .reset-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.filter-btn { background: #3498db; color: #fff; }
+.filter-btn:hover { background: #2980b9; }
+.reset-btn { background: #e74c3c; color: #fff; }
+.reset-btn:hover { background: #c0392b; }
+
+.api-filters .date-field + .date-field { margin-left: 8px; }
+.api-filters .date-field + .filter-btn { margin-left: 8px; }
+.api-filters .filter-btn + .reset-btn { margin-left: 8px; }
+
+@media (max-width: 900px) {
+  .api-filters { gap: 10px; }
+  .api-filters > input[type="text"] { flex: 1 1 auto; width: 100%; }
+  .api-filters .date-field { width: 100%; flex: 1 1 auto; }
+  .api-filters .filter-btn, .api-filters .reset-btn { width: auto; align-self: flex-start; }
+  .api-filters .date-field:first-of-type { margin-left: 0; }
+}
+
+/* TABLE */
+.api-table-wrapper { width: 100%; overflow-x: auto; }
+.api-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; background: #ffffff; border: 1px solid #e0e0e0; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
+.api-table thead { background: #f8f9fa; }
+.api-table th { text-align: left; padding: 14px 10px; font-weight: 600; font-size: 15px; color: #34495e; border-bottom: 2px solid #e5e5e5; }
+.api-table td { padding: 13px 10px; border-bottom: 1px solid #f1f1f1; color: #555; font-size: 14px; vertical-align: middle; }
+.api-table tr:nth-child(even) { background: #fafafa; }
+.loading-row, .empty { text-align: center; padding: 18px; font-size: 15px; color: #888; }
+
+.method.get { color: #27ae60; font-weight: 600; }
+.method.post { color: #3498db; font-weight: 600; }
+.method.put { color: #f1c40f; font-weight: 600; }
+.method.delete { color: #e74c3c; font-weight: 600; }
+.status.ok { color: #27ae60; font-weight: 600; }
+.status.error { color: #e74c3c; font-weight: 600; }
+
+.view-btn { padding: 6px 12px; background: #3498db; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: 0.2s ease; }
+.view-btn:hover { background: #2980b9; }
+
+.pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 20px; }
+.pg-btn { padding: 6px 14px; border: 1px solid #d0d7de; background: #f1f5f9; border-radius: 6px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+.pg-btn:hover { background: #e2e8f0; }
+.pg-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pg-page { font-size: 14px; font-weight: 600; color: #34495e; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; z-index: 999; }
+.modal-box { background: #ffffff; width: 90%; max-width: 550px; padding: 22px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); animation: slideUp 0.25s ease; }
+.close-btn { margin-top: 16px; width: 100%; padding: 10px 16px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 600; transition: 0.2s ease; }
+.close-btn:hover { background: #2980b9; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+/* ================================
+   API Logs - Cleaned Styles
+   Consolidated and simplified to ensure filter controls align properly
+================================ */
+.api-page {
+  padding: 25px 30px;
+  animation: fadeIn 0.3s ease;
+}
+
+.api-page h2 {
+  font-size: 26px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+/* ================================
+   FILTERS
+================================ */
+.api-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+/* Make search input flexible and prominent */
+.api-filters > input[type="text"] {
+  height: 42px;
+  padding: 0 14px;
+  flex: 1 1 60%;
+  min-width: 220px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s ease;
+  background: #fff;
+  font-size: 14px;
+}
+
+/* Compact selects for method & status */
+.api-filters > select {
+  height: 42px;
+  padding: 0 12px;
+  flex: 0 0 160px;
+  min-width: 120px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+.api-filters > select:focus,
+.api-filters > input[type="text"]:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52,152,219,0.12);
+}
+
+/* Date fields and right-side actions */
+.api-filters .date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 150px;
+  min-width: 120px;
+}
+.api-filters .date-field input {
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.api-filters .date-field label {
+  font-size: 13px;
+  color: #1d2a38;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+/* Push the first date field (and everything after it) to the right */
+.api-filters .date-field:first-of-type {
+  margin-left: auto;
+}
+
+/* Action buttons (Apply / Reset) keep compact sizing and spacing */
+.filter-btn,
+.reset-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  flex: 0 0 auto;
+}
+.filter-btn { background: #3498db; color: #fff; }
+.filter-btn:hover { background: #2980b9; }
+.reset-btn { background: #e74c3c; color: #fff; }
+.reset-btn:hover { background: #c0392b; }
+
+/* small spacing between date fields and buttons */
+.api-filters .date-field + .date-field { margin-left: 8px; }
+.api-filters .date-field + .filter-btn { margin-left: 8px; }
+.api-filters .filter-btn + .reset-btn { margin-left: 8px; }
+
+/* Responsive behavior */
+@media (max-width: 900px) {
+  .api-filters { gap: 10px; }
+  .api-filters > input[type="text"] { flex: 1 1 auto; width: 100%; }
+  .api-filters .date-field { width: 100%; flex: 1 1 auto; }
+  .api-filters .filter-btn, .api-filters .reset-btn { width: auto; align-self: flex-start; }
+  .api-filters .date-field:first-of-type { margin-left: 0; }
+}
+
+/* ================================
+   TABLE & PAGE STYLES (kept from previous file)
+================================ */
+.api-table-wrapper { width: 100%; overflow-x: auto; }
+.api-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; background: #ffffff; border: 1px solid #e0e0e0; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
+.api-table thead { background: #f8f9fa; }
+.api-table th { text-align: left; padding: 14px 10px; font-weight: 600; font-size: 15px; color: #34495e; border-bottom: 2px solid #e5e5e5; }
+.api-table td { padding: 13px 10px; border-bottom: 1px solid #f1f1f1; color: #555; font-size: 14px; vertical-align: middle; }
+.api-table tr:nth-child(even) { background: #fafafa; }
+.loading-row, .empty { text-align: center; padding: 18px; font-size: 15px; color: #888; }
+
+/* Methods & status styling */
+.method.get { color: #27ae60; font-weight: 600; }
+.method.post { color: #3498db; font-weight: 600; }
+.method.put { color: #f1c40f; font-weight: 600; }
+.method.delete { color: #e74c3c; font-weight: 600; }
+.status.ok { color: #27ae60; font-weight: 600; }
+.status.error { color: #e74c3c; font-weight: 600; }
+
+.view-btn { padding: 6px 12px; background: #3498db; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: 0.2s ease; }
+.view-btn:hover { background: #2980b9; }
+
+/* Pagination */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 20px; }
+.pg-btn { padding: 6px 14px; border: 1px solid #d0d7de; background: #f1f5f9; border-radius: 6px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+.pg-btn:hover { background: #e2e8f0; }
+.pg-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pg-page { font-size: 14px; font-weight: 600; color: #34495e; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; z-index: 999; }
+.modal-box { background: #ffffff; width: 90%; max-width: 550px; padding: 22px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); animation: slideUp 0.25s ease; }
+.close-btn { margin-top: 16px; width: 100%; padding: 10px 16px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 600; transition: 0.2s ease; }
+.close-btn:hover { background: #2980b9; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
 /* ================================
    PAGE BASE STYLE
 ================================ */
@@ -30,6 +340,268 @@
   margin-bottom: 20px;
 }
 
+/* Layout: put search + method + status on the first row, others on second row */
+.api-filters > :nth-child(1),
+.api-filters > :nth-child(2),
+.api-filters > :nth-child(3) {
+  order: 1;
+}
+.api-filters > :nth-child(n+4) {
+  order: 2;
+}
+
+/* First row sizing: search grows, selects are compact */
+.api-filters > input[type="text"] {
+  height: 42px;
+  padding: 0 14px;
+  flex: 1 1 60%;
+  min-width: 220px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s ease;
+  background: #fff;
+  font-size: 14px;
+}
+
+.api-filters > select {
+  height: 42px;
+  padding: 0 12px;
+  flex: 0 0 160px;
+  min-width: 120px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.api-filters > select:focus { border-color: #3498db; box-shadow: 0 0 0 3px rgba(52,152,219,0.12); }
+.api-filters > input[type="text"]:focus { border-color: #3498db; box-shadow: 0 0 0 2px rgba(52,152,219,0.25); }
+
+/* Date fields and second-row items (compact, left-aligned) */
+.api-filters .date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 150px;
+  min-width: 120px;
+}
+
+.api-filters .date-field label {
+  font-size: 13px;
+  color: #1d2a38;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.api-filters .date-field input {
+  /* Reduced height for a slimmer look */
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* Buttons for second row */
+.filter-btn,
+.reset-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.filter-btn { background: #3498db; color: #fff; }
+.filter-btn:hover { background: #2980b9; }
+.reset-btn { background: #e74c3c; color: #fff; }
+.reset-btn:hover { background: #c0392b; }
+
+/* Ensure second-row items align left and stay compact */
+.api-filters > :nth-child(n+4) {
+  align-self: flex-start;
+}
+
+/* Small spacing between second-row items */
+.api-filters .date-field + .date-field { margin-left: 0; }
+.api-filters .date-field + .filter-btn { margin-left: 8px; }
+.api-filters .filter-btn + .reset-btn { margin-left: 8px; }
+
+/* ================================
+   TABLE WRAPPER
+================================ */
+.api-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* ================================
+   TABLE
+================================ */
+.api-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+
+.api-table thead { background: #f8f9fa; }
+
+.api-table th {
+  text-align: left;
+  padding: 14px 10px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #34495e;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.api-table td {
+  padding: 13px 10px;
+  border-bottom: 1px solid #f1f1f1;
+  color: #555;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.api-table tr:nth-child(even) { background: #fafafa; }
+.api-table tr:last-child td { border-bottom: none; }
+
+.loading-row, .empty { text-align: center; padding: 18px; font-size: 15px; color: #888; }
+
+/* ================================
+   STATUS COLORS
+================================ */
+.method.get { color: #27ae60; font-weight: 600; }
+.method.post { color: #3498db; font-weight: 600; }
+.method.put { color: #f1c40f; font-weight: 600; }
+.method.delete { color: #e74c3c; font-weight: 600; }
+
+.status.ok { color: #27ae60; font-weight: 600; }
+.status.error { color: #e74c3c; font-weight: 600; }
+
+/* View Button */
+.view-btn {
+  padding: 6px 12px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.view-btn:hover { background: #2980b9; }
+
+/* ================================
+   PAGINATION
+================================ */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 20px; }
+.pg-btn { padding: 6px 14px; border: 1px solid #d0d7de; background: #f1f5f9; border-radius: 6px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+.pg-btn:hover { background: #e2e8f0; }
+.pg-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pg-page { font-size: 14px; font-weight: 600; color: #34495e; }
+
+/* ================================
+   MODAL
+================================ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; z-index: 999; }
+.modal-box { background: #ffffff; width: 90%; max-width: 550px; padding: 22px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); animation: slideUp 0.25s ease; }
+.modal-box h3 { margin: 0 0 12px; font-size: 20px; font-weight: 700; color: #2c3e50; }
+.log-details p { margin: 6px 0; font-size: 14px; }
+.json-block { margin-top: 12px; background: #f8f9fa; border-radius: 10px; padding: 12px; border: 1px solid #e0e0e0; }
+.json-block pre { font-size: 13px; color: #333; max-height: 200px; overflow: auto; white-space: pre-wrap; }
+.close-btn { margin-top: 16px; width: 100%; padding: 10px 16px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 600; transition: 0.2s ease; }
+.close-btn:hover { background: #2980b9; }
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* Responsive tweaks */
+@media (max-width: 720px) {
+  .api-filters { flex-direction: column; align-items: stretch; gap: 10px; }
+  .api-filters > input[type="text"] { flex: 1 1 auto; width: 100%; }
+  .api-filters .date-field { width: 100%; flex: 1 1 auto; }
+  .api-filters .filter-btn, .api-filters .reset-btn { width: auto; align-self: flex-start; }
+}
+/* ================================
+   PAGE BASE STYLE
+================================ */
+.api-page {
+  padding: 25px 30px;
+  animation: fadeIn 0.3s ease;
+}
+
+.api-page h2 {
+  font-size: 26px;
+  margin-bottom: 6px;
+  font-weight: 600;
+
+  /* Layout: force first row to contain the search + method + status controls,
+     and put date pickers + action buttons on a compact second row aligned left. */
+  .api-filters > :nth-child(1),
+  .api-filters > :nth-child(2),
+  .api-filters > :nth-child(3) {
+    order: 1;
+  }
+
+  .api-filters > :nth-child(n+4) {
+    order: 2;
+  }
+
+  /* sizing for first-row controls */
+  .api-filters > input[type="text"] {
+    flex: 1 1 60%;
+    min-width: 220px;
+  }
+
+  .api-filters > select {
+    flex: 0 0 160px;
+    min-width: 120px;
+  color: #2c3e50;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+    flex: 0 0 150px;
+    min-width: 120px;
+    gap: 4px;
+    margin-right: 8px;
+   FILTERS
+================================ */
+.api-filters {
+  display: flex;
+  .api-filters .filter-btn { margin-left: 0; margin-right: 8px; }
+  .api-filters .reset-btn { margin-left: 0; }
+
+  /* Ensure second row items align left and don't expand full width */
+  .api-filters > :nth-child(n+4) {
+    align-self: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start; /* keep controls left-aligned by default */
+  margin-bottom: 20px;
+}
+
 .api-filters input {
   height: 42px;
   padding: 0 14px;
@@ -42,6 +614,57 @@
   background: #fff;
   font-size: 14px;
 }
+
+/* Date field styling inside api filters to avoid oversized boxes */
+.api-filters .date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.api-filters .date-field label {
+  font-size: 13px;
+  color: #1d2a38;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.api-filters .date-field input {
+  /* Reduce height to make date controls less tall visually */
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* Make date pickers compact and push them (and apply/reset) to the right */
+.api-filters .date-field {
+  /* keep compact width but allow a slightly smaller visual footprint */
+  flex: 0 0 150px;
+  min-width: 120px;
+  gap: 4px;
+}
+
+/* Push date fields and the action buttons to the right side of the row */
+.api-filters .date-field:first-of-type {
+  margin-left: auto;
+}
+
+.api-filters .filter-btn { margin-left: 8px; }
+.api-filters .reset-btn { margin-left: 8px; }
+
+.api-filters select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.api-filters select:focus { border-color: #3498db; box-shadow: 0 0 0 3px rgba(52,152,219,0.12); }
 
 .api-filters input:focus {
   border-color: #3498db;
@@ -58,6 +681,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
+  flex: 0 0 auto;
+  width: auto;
 }
 
 .filter-btn {

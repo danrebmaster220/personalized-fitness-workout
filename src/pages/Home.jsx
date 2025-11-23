@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import "../styles/Home.css";
 import FeatureCard from "../components/FeatureCard";
 import Button from "../components/Button";
+import { useSettings } from '../contexts/SettingsContext';
+import { useEffect } from 'react';
+import AppLogo from '../components/AppLogo';
 
 const Home = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, _setLoading] = useState(false);
+  const { settings } = useSettings();
 
   const handleGenerateClick = () => {
     const token = localStorage.getItem("userToken");
@@ -20,28 +24,49 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            // if you want one-time animation, unobserve
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    const els = document.querySelectorAll('.animate-on-scroll');
+    els.forEach((el) => io.observe(el));
+
+    return () => io.disconnect();
+  }, []);
+
   return (
     <div className="home-container">
       {/* HERO SECTION */}
       <section className="hero" id="hero">
         <div className="overlay"></div>
         <div className="hero-content">
-          <h1>
-            Sync Your Goals. Track Your Progress.
+          <h1 className="animate-on-scroll">
+            {settings?.home_title || 'Sync Your Goals. Track Your Progress.'}
             <br />
-            <span>Shape Your Results.</span>
+            <span>{settings?.home_subtitle || 'Shape Your Results.'}</span>
           </h1>
-          <p>
-            Your personalized fitness and workout companion designed to help you
-            reach your goals faster and smarter.
+          <p className="animate-on-scroll">
+            {settings?.home_description || 'Your personalized fitness and workout companion designed to help you reach your goals faster and smarter.'}
           </p>
 
-          <Button text="Get Started" onClick={handleGenerateClick} loading={loading} />
+          <div className="animate-on-scroll">
+            <Button text={settings?.cta_text || 'Get Started'} onClick={handleGenerateClick} loading={loading} />
+          </div>
         </div>
       </section>
 
       {/* FEATURES SECTION */}
-      <section className="features" id="features">
+      <section className="features animate-on-scroll animate-stagger" id="features">
         <h2>Features</h2>
         <p>
           Our platform uses intelligent APIs to generate a customized workout
@@ -73,7 +98,7 @@ const Home = () => {
       </section>
 
       {/* CTA SECTION */}
-      <section className="cta-section" id="generate-workout">
+      <section className="cta-section animate-on-scroll" id="generate-workout">
         <h3>Are you ready to build your personalized workout plan?</h3>
         <Button
           text="Generate My Workout"
@@ -85,17 +110,17 @@ const Home = () => {
 
       {/* ABOUT SECTION */}
       <section id="about" className="about-container">
-        <div className="about-header">
-          <h1>About FitSync</h1>
+        <div className="about-header animate-on-scroll">
+          <h1>About <AppLogo appName={settings?.app_name || 'FitSync'} /></h1>
           <p>Your personalized fitness companion for smarter workouts and faster results.</p>
         </div>
 
         <div className="about-section">
           <h2>Our Story</h2>
           <p>
-            FitSync was created with a single purpose — to make fitness simple, smart, and personal.
+            <AppLogo appName={settings?.app_name || 'FitSync'} /> was created with a single purpose — to make fitness simple, smart, and personal.
             We understand that every journey is unique, so we built a platform that adapts to your
-            goals, schedule, and progress. Whether you're a beginner or an athlete, FitSync evolves
+            goals, schedule, and progress. Whether you're a beginner or an athlete, <AppLogo appName={settings?.app_name || 'FitSync'} /> evolves
             with you — syncing your workouts, nutrition, and performance into one seamless experience.
           </p>
         </div>
@@ -104,7 +129,7 @@ const Home = () => {
           <h2>Our Mission</h2>
           <p>
             To empower individuals to reach their full potential through personalized and data-driven
-            fitness plans. FitSync merges technology and motivation to make achieving your health goals
+            fitness plans. <AppLogo appName={settings?.app_name || 'FitSync'} /> merges technology and motivation to make achieving your health goals
             efficient, enjoyable, and sustainable.
           </p>
         </div>
@@ -188,10 +213,10 @@ const Home = () => {
 
       {/* FOOTER */}
       <section className="footer">
-        <div className="footer-container">
+          <div className="footer-container">
           {/* Logo */}
           <div className="footer-logo">
-            FitSync<span className="footer-logo-accent"></span>
+            <AppLogo appName={settings?.app_name || 'FitSync'} className="small" />
           </div>
 
           {/* Footer Navigation */}
@@ -212,7 +237,7 @@ const Home = () => {
 
         {/* Bottom section */}
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} FitSync. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} <AppLogo appName={settings?.app_name || 'FitSync'} className="small" />. All rights reserved.</p>
         </div>
       </section>
     </div>

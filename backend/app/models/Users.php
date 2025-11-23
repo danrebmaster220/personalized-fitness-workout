@@ -44,6 +44,34 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Find user by Google ID
+    public function findByGoogleId($googleId) {
+        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE Google_ID = :gid LIMIT 1");
+        $stmt->execute([":gid" => $googleId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Create a user from Google profile
+    public function createGoogleUser($firstName, $lastName, $email, $googleId) {
+        $query = "INSERT INTO {$this->table} (FirstName, LastName, Email, Password, Is_Verified, Google_ID, Login_Method) VALUES (:firstName, :lastName, :email, NULL, 1, :googleId, 'google')";
+        $stmt = $this->conn->prepare($query);
+        $ok = $stmt->execute([
+            ":firstName" => $firstName,
+            ":lastName" => $lastName,
+            ":email" => $email,
+            ":googleId" => $googleId
+        ]);
+
+        if (!$ok) return false;
+        return $this->conn->lastInsertId();
+    }
+
+    // Link an existing account (by email) to a Google ID
+    public function linkGoogleToEmail($email, $googleId) {
+        $stmt = $this->conn->prepare("UPDATE {$this->table} SET Google_ID = :gid, Is_Verified = 1, Login_Method = 'google' WHERE Email = :email");
+        return $stmt->execute([":gid" => $googleId, ":email" => $email]);
+    }
+
     // DYNAMIC SAFE PROFILE UPDATE
     public function updateProfile($id, $data) {
 
@@ -93,6 +121,23 @@ class User {
     public function updateVerificationToken($id, $token) {
         $stmt = $this->conn->prepare("UPDATE {$this->table} SET Verification_Token = :t WHERE User_ID = :id");
         return $stmt->execute([":t" => $token, ":id" => $id]);
+    }
+
+    // Update Email and reset verification token (used when user changes email)
+    public function updateEmailAndToken($id, $email, $token) {
+        $stmt = $this->conn->prepare("UPDATE {$this->table} SET Email = :email, Is_Verified = 0, Verification_Token = :t WHERE User_ID = :id");
+        $ok = $stmt->execute([
+            ":email" => $email,
+            ":t" => $token,
+            ":id" => $id
+        ]);
+
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            return ["success" => false, "error" => $err[2] ?? "Unknown DB error"];
+        }
+
+        return ["success" => true];
     }
 
     public function verifyUser($token) {
@@ -160,6 +205,11 @@ class User {
             ":img" => $path,
             ":id"  => $id
         ]);
+    }
+    
+    public function updateLoginMethod($id, $method) {
+        $stmt = $this->conn->prepare("UPDATE {$this->table} SET Login_Method = :method WHERE User_ID = :id");
+        return $stmt->execute([":method" => $method, ":id" => $id]);
     }
     
 }

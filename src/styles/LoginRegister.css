@@ -2,7 +2,8 @@ body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   height: 100vh;
-  overflow: hidden;
+  /* allow page scrolling on small screens */
+  overflow: auto;
 }
 
 .split-container {
@@ -36,9 +37,10 @@ body {
   color: #ffffff;
 }
 
-.overlay span {
-  color: #00b4d8; 
-}
+.overlay h2 .app-logo { display:inline-block; }
+.overlay h2 .app-logo .accent { color: #00b4d8; text-shadow: 0 0 12px rgba(52,152,219,0.6); }
+
+.overlay p { margin-top: 8px; font-size: 1.1rem; color: #a5b4fc; }
 
 .overlay p {
   margin-top: 8px;
@@ -69,11 +71,14 @@ body {
   backdrop-filter: blur(18px);
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
   border-radius: 20px;
-  padding: 60px 70px;
-  width: 90%;
-  max-width: 400px;
+  padding: 40px 32px;
+  width: 92%;
+  max-width: 520px;
   text-align: left;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* allow the card to grow and scroll if content overflows */
+  max-height: calc(100vh - 80px);
+  overflow: auto;
 }
 
 .auth-card:hover {
@@ -108,7 +113,9 @@ header a:hover {
 
 .input-group {
   position: relative;
-  margin-top: 25px;
+  margin-top: 18px;
+  display: block;
+  width: 100%;
 }
 
 .input-group input,
@@ -132,30 +139,39 @@ header a:hover {
 
 .input-group label {
   position: absolute;
-  top: 50%;
+  top: 12px;
   left: 12px;
-  transform: translateY(-50%);
+  transform: none;
   color: #9ca3af;
   pointer-events: none;
-  transition: 0.3s ease;
+  transition: 0.22s ease;
+  background: transparent;
+  padding: 0 4px;
 }
 
 .input-group input:focus + label,
 .input-group input:valid + label,
 .input-group select:focus + label,
 .input-group select:not([value=""]) + label {  /* Added select label animation */
-  top: -8px;
+  top: -10px;
   left: 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #00b4d8;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 0 4px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0 6px;
   border-radius: 4px;
 }
 
 .input-group select {  /* Specific select styles for appearance */
   appearance: none;  /* Removes default arrow */
   cursor: pointer;
+  /* show placeholder color when empty */
+  color: #9ca3af;
+}
+
+.input-group select:focus,
+.input-group select:not(:invalid) {
+  color: #e5e7eb;
 }
 
 .input-group select option {
@@ -168,10 +184,15 @@ header a:hover {
   padding-right: 40px;
 }
 
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 30px;
+/* auth form buttons: centered and not full width to match design request */
+.auth-card .auth-form button {
+  width: auto;
+  min-width: 220px;
+  padding: 12px 28px;
+  margin-top: 22px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   background: linear-gradient(90deg, #0077b6, #023e8a);
   border: none;
   border-radius: 8px;
@@ -180,6 +201,11 @@ button {
   font-size: 1rem;
   cursor: pointer;
   transition: 0.3s ease;
+}
+
+/* fallback for any other buttons still relying on global selector */
+button {
+  padding: 8px 14px;
 }
 
 button:hover {
@@ -211,4 +237,14 @@ button:hover {
   margin-top: 12px;
   font-size: 0.95rem;
   color: #00b4d8;
+}
+
+/* Disabled/readonly inputs styling */
+.input-group input:disabled,
+.input-group input[readonly] {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
